@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top"><h2 class="screen-title">Messages & Communication</h2></div>
+          <div class="grid-2">
+            <div class="card chat-card">
+              <div class="card-header"><h3>Team Chat</h3></div>
+              <div class="chat-messages" id="chatMessages"></div>
+              <div class="chat-input">
+                <input type="text" placeholder="Type a message…" id="chatInput" />
+                <button class="btn btn-primary" id="sendMsgBtn">Send</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Task Notes</h3></div>
+              <div class="note-list">
+                <div class="note-item"><strong>Q1 Review</strong><p>Self-assessments due by Friday. Managers review next week.</p><small>Feb 18</small></div>
+                <div class="note-item"><strong>Benefits Update</strong><p>New dental plan options available. Review in portal.</p><small>Feb 15</small></div>
+              </div>
+              <textarea rows="3" placeholder="Add a note…" class="note-input"></textarea>
+              <button class="btn btn-outline" style="margin-top:.5rem">Save Note</button>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/communication.js"></script>
+</body>
+</html>

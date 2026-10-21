@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HRMS Suite</title>
+  <script src="./js/hrms-config.js?v=2"></script>
+  <script>
+    window.location.replace(
+      sessionStorage.getItem('hrms_access_token') && sessionStorage.getItem('hrms_session_email')
+        ? 'dashboard.html'
+        : 'login.html'
+    );
+  </script>
+</head>
+<body>
+  <p style="font-family: system-ui, sans-serif; padding: 1rem">Redirecting…</p>
+</body>
+</html>

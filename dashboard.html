@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <div>
+              <h2 class="screen-title" id="dashTitle">Admin Dashboard</h2>
+              <p class="screen-subtitle" id="dashSubtitle">Company-wide overview of employees, payroll, and pending actions.</p>
+            </div>
+            <div class="btn-group" id="dashActions">
+              <button class="btn btn-primary" id="addEmployeeBtn">+ Add Employee</button>
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">Export PDF</button>
+            </div>
+          </div>
+
+          <div class="metrics" id="metricsGrid">
+            <div class="metric-card">
+              <div class="metric-icon blue">
+                <svg viewBox="0 0 24 24" width="28" height="28"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/></svg>
+              </div>
+              <div>
+                <small>Total Employees</small>
+                <strong id="metricTotal">11</strong>
+                <span class="metric-delta positive" id="metricTotalDelta">+2 this month</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon green">
+                <svg viewBox="0 0 24 24" width="28" height="28"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>
+              </div>
+              <div>
+                <small>Active</small>
+                <strong id="metricActive">10</strong>
+                <span class="metric-delta positive" id="metricActivePct">90.9%</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon orange">
+                <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+              </div>
+              <div>
+                <small>Pending Requests</small>
+                <strong class="urgent" id="metricPending">4</strong>
+                <span class="metric-delta">Leave &amp; corrections</span>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon purple">
+                <svg viewBox="0 0 24 24" width="28" height="28"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" fill="currentColor"/></svg>
+              </div>
+              <div>
+                <small>Monthly Payroll</small>
+                <strong id="metricPayroll">$67,900</strong>
+                <span class="metric-delta">Next run Feb 28</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card" id="approvalsCard">
+              <div class="card-header">
+                <h3>Pending Approvals</h3>
+                <span class="badge orange" id="approvalBadge">4 new</span>
+              </div>
+              <ul class="approval-list" id="approvalList"></ul>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>Company Announcements</h3></div>
+              <ul class="announce-list">
+                <li><span class="dot blue"></span><div><strong>Q1 Review Cycle</strong><p>Performance reviews open Monday. Complete self-assessments by Mar 7.</p></div></li>
+                <li><span class="dot green"></span><div><strong>Tax Forms Available</strong><p>W-2 and 1099 forms are ready in the Payroll section.</p></div></li>
+                <li><span class="dot orange"></span><div><strong>Office Closure</strong><p>Office closed March 21 for Spring Holiday.</p></div></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><h3>Attendance This Week</h3></div>
+              <div class="chart-placeholder">
+                <div class="bar-chart">
+                  <div class="bar" style="--h:85%"><span>Mon</span></div>
+                  <div class="bar" style="--h:92%"><span>Tue</span></div>
+                  <div class="bar" style="--h:78%"><span>Wed</span></div>
+                  <div class="bar" style="--h:90%"><span>Thu</span></div>
+                  <div class="bar" style="--h:70%"><span>Fri</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Leave Balances (Avg)</h3></div>
+              <div class="stat-row"><span>Annual Leave</span><div class="progress-bar"><div class="fill" style="width:62%"></div></div><span>12.4 / 20</span></div>
+              <div class="stat-row"><span>Sick Leave</span><div class="progress-bar"><div class="fill orange" style="width:35%"></div></div><span>3.5 / 10</span></div>
+              <div class="stat-row"><span>Personal</span><div class="progress-bar"><div class="fill purple" style="width:50%"></div></div><span>2.5 / 5</span></div>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=9" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Settings</h2>
+            <button class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><h3>Roles & Permissions</h3></div>
+              <div class="setting-group">
+                <label class="setting-row"><input type="checkbox" checked /><div><strong>Admin</strong><small>Full system access</small></div></label>
+                <label class="setting-row"><input type="checkbox" checked /><div><strong>Manager</strong><small>Team management + approvals</small></div></label>
+                <label class="setting-row"><input type="checkbox" checked /><div><strong>Employee</strong><small>Self-service access</small></div></label>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>System Preferences</h3></div>
+              <div class="setting-group">
+                <label class="form-field">Work Hours<input type="text" value="09:00 – 18:00" /></label>
+                <label class="form-field">Timezone<select><option>UTC-5 (Eastern)</option><option>UTC-6 (Central)</option><option>UTC-8 (Pacific)</option></select></label>
+                <label class="setting-row"><input type="checkbox" checked /><div><strong>Email Notifications</strong><small>Send alerts for approvals and updates</small></div></label>
+                <label class="setting-row"><input type="checkbox" id="settingsNightToggle" /><div><strong>Night Mode</strong><small>Dark theme for low-light environments</small></div></label>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Profile Settings</h3></div>
+              <div class="setting-group" id="settingsProfile"></div>
+            </div>
+            <div class="card" data-roles="admin">
+              <div class="card-header"><h3>Audit log</h3></div>
+              <div class="setting-group">
+                <p style="font-size:.85rem;color:var(--text-secondary)">Recent server-side events (logins are not recorded here unless you add them).</p>
+                <div style="overflow:auto;max-height:340px;border:1px solid var(--border);border-radius:var(--radius-sm)">
+                  <table class="cred-table" style="margin:0">
+                    <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Entity</th></tr></thead>
+                    <tbody id="auditLogBody"><tr><td colspan="4">—</td></tr></tbody>
+                  </table>
+                </div>
+                <div class="btn-group" style="margin-top:.5rem">
+                  <button type="button" class="btn btn-outline btn-sm" id="auditPrevBtn">Previous</button>
+                  <button type="button" class="btn btn-outline btn-sm" id="auditNextBtn">Next</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Data management</h3></div>
+              <div class="setting-group">
+                <p>Employees, tasks, leave, chat, and notifications are saved in <strong>this browser only</strong> (localStorage). Clearing site data or using another device starts from a fresh demo until you import a snapshot.</p>
+                <div class="btn-group" style="margin-top:.5rem;flex-wrap:wrap;gap:.5rem">
+                  <button type="button" class="btn btn-outline" id="downloadWorkspaceSnapshotBtn">Download JSON snapshot</button>
+                  <button class="btn btn-outline export-btn" data-type="csv">Export employees (CSV)</button>
+                  <button class="btn btn-outline export-btn" data-type="pdf">Export report (text)</button>
+                </div>
+                <div data-roles="admin" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+                  <p><strong>Administrator</strong> — restore a full workspace from a file, or reset to the built-in demo (erases local data only).</p>
+                  <div class="btn-group" style="margin-top:.5rem;flex-wrap:wrap;gap:.5rem">
+                    <button type="button" class="btn btn-outline" id="triggerRestoreSnapshotBtn">Restore from JSON…</button>
+                    <button type="button" class="btn btn-danger btn-outline" id="resetFactoryDemoBtn">Erase &amp; restore demo</button>
+                  </div>
+                  <input type="file" id="restoreSnapshotInput" accept="application/json,.json,.txt" tabindex="-1" aria-hidden="true" style="position:absolute;width:0;height:0;opacity:0" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      
+</template>
+<script type="module" src="./js/boot/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payroll – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Payroll Management</h2>
+            <div class="btn-group">
+              <button class="btn btn-primary" data-roles="admin">Run Payroll</button>
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">Download Payslip</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><h3>Salary Breakdown</h3></div>
+              <div class="stat-row"><span>Base Salary</span><strong id="payBase">—</strong></div>
+              <div class="stat-row"><span>Housing Allowance</span><strong id="payHousing">—</strong></div>
+              <div class="stat-row"><span>Tax Deduction</span><strong class="urgent" id="payTax">—</strong></div>
+              <div class="stat-row"><span>Insurance</span><strong class="urgent" id="payIns">—</strong></div>
+              <div class="stat-row total"><span>Net Pay</span><strong id="payNet">—</strong></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Payment History</h3></div>
+              <ul class="history-list" id="payHistory"></ul>
+            </div>
+          </div>
+          <div class="card" data-roles="admin">
+            <div class="card-header"><h3>Salary Rules Configuration</h3></div>
+            <div class="grid-2" style="gap:1rem">
+              <label class="form-field">Tax Rate<input type="text" value="18%" /></label>
+              <label class="form-field">Overtime Multiplier<input type="text" value="1.5x" /></label>
+              <label class="form-field">Insurance Deduction<input type="text" value="$160" /></label>
+              <label class="form-field">Bonus Cap<input type="text" value="$2,000" /></label>
+            </div>
+            <button class="btn btn-primary" style="margin-top:1rem">Save Rules</button>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/payroll.js"></script>
+</body>
+</html>

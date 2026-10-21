@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام إدارة الموارد البشرية HRMS Suite – تسجيل الدخول</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=10" />
+  <script src="./js/hrms-config.js?v=2"></script>
+  <style>
+    body { font-family: 'Tajawal', 'Inter', sans-serif; }
+    .demo-info strong { display: block; font-size: 0.95rem; color: var(--text); }
+    .demo-creds code { font-family: monospace; font-size: 0.8rem; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; display: block; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="login-page" id="loginPage">
+    <div class="login-bg-pattern"></div>
+
+    <div class="login-night-toggle">
+      <label class="theme-toggle" for="loginNightToggle">
+        <input type="checkbox" id="loginNightToggle" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">الوضع الليلي</span>
+      </label>
+    </div>
+
+    <div class="login-container">
+      <div class="login-hero">
+        <svg width="56" height="56" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#fff"/><path d="M9 22V10h4v5h6v-5h4v12h-4v-5h-6v5H9z" fill="var(--accent)"/></svg>
+        <h1>شركة company 1</h1>
+        <p>المنظومة المتكاملة لإدارة الموارد البشرية، مسيرات الرواتب، الحضور والانصراف، والتحكم الفائق.</p>
+        <div class="login-hero-stats">
+          <div><strong>14</strong><span>حساب معتمد</span></div>
+          <div><strong>10</strong><span>أقسام إدارية</span></div>
+          <div><strong>100%</strong><span>شركة company 1</span></div>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <div class="login-card-header">
+          <h2>مرحباً بك مجدداً</h2>
+          <p>أدخل بيانات الحساب للمتابعة إلى لوحة التحكم</p>
+        </div>
+
+        <div style="background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 0.85rem; color: var(--text);">🛡️ <strong>إدارة المنصة (Super Admin)؟</strong></div>
+          <a href="platform-admin.html" style="font-size: 0.82rem; font-weight: 700; color: #6366f1; text-decoration: none; background: rgba(99,102,241,0.12); padding: 4px 10px; border-radius: 6px;">بوابة السوبر أدمن ←</a>
+        </div>
+
+        <form id="loginForm" autocomplete="off">
+          <label class="form-field">
+            <span>البريد الإلكتروني / اسم المستخدم</span>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
+              <input type="text" id="loginEmail" placeholder="ceo1" required value="ceo1" />
+            </div>
+          </label>
+          <label class="form-field">
+            <span>كلمة المرور</span>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg>
+              <input type="password" id="loginPassword" placeholder="••••••••" required value="admin@123" />
+            </div>
+          </label>
+          <div class="login-options">
+            <label class="login-remember"><input type="checkbox" checked /> تذكر الحساب</label>
+            <a href="forgot-password.html" class="login-forgot">نسيت كلمة المرور؟</a>
+          </div>
+          <div class="login-error" id="loginError"></div>
+          <button type="submit" class="btn btn-primary login-submit">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>
+            تسجيل الدخول
+          </button>
+        </form>
+
+        <div class="login-divider"><span>دخول سريع — حسابات شركة company 1</span></div>
+
+        <div class="demo-accounts">
+          <button type="button" class="demo-card" data-redirect="platform-admin.html">
+            <div class="demo-avatar admin" style="background: var(--purple, #7c3aed); color: #fff;">AS</div>
+            <div class="demo-info">
+              <strong>علاء سليم</strong>
+              <span class="demo-role admin-tag" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed;">Super Admin Portal ↗</span>
+            </div>
+            <div class="demo-creds">
+              <code>platform-admin.html</code>
+              <code>بوابة المنصة</code>
+            </div>
+          </button>
+          <button type="button" class="demo-card" data-email="ceo1" data-password="admin@123">
+            <div class="demo-avatar admin">C1</div>
+            <div class="demo-info">
+              <strong>CEO 1</strong>
+              <span class="demo-role admin-tag">الرئيس التنفيذي</span>
+            </div>
+            <div class="demo-creds">
+              <code>ceo1</code>
+              <code>admin@123</code>
+            </div>
+          </button>
+          <button type="button" class="demo-card" data-email="hrmanager1" data-password="admin@123">
+            <div class="demo-avatar admin">H1</div>
+            <div class="demo-info">
+              <strong>HR Manager 1</strong>
+              <span class="demo-role admin-tag">مدير الموارد البشرية</span>
+            </div>
+            <div class="demo-creds">
+              <code>hrmanager1</code>
+              <code>admin@123</code>
+            </div>
+          </button>
+          <button type="button" class="demo-card" data-email="emp1.1" data-password="user@123">
+            <div class="demo-avatar employee">E1</div>
+            <div class="demo-info">
+              <strong>emp1.1</strong>
+              <span class="demo-role employee-tag">موظف (Employee)</span>
+            </div>
+            <div class="demo-creds">
+              <code>emp1.1</code>
+              <code>user@123</code>
+            </div>
+          </button>
+        </div>
+
+        <details class="all-credentials" style="margin-top: 15px;">
+          <summary>جدول جميع حسابات شركة company 1 (14 حساب)</summary>
+          <table class="cred-table">
+            <thead><tr><th>الاسم / المنصب</th><th>الدور</th><th>اسم المستخدم / البريد</th><th>كلمة المرور</th></tr></thead>
+            <tbody>
+              <tr><td>علاء سليم</td><td><span class="demo-role admin-tag" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed;">Super Admin</span></td><td><code>alaa.saleem</code></td><td><code>alaa.alaa.12</code></td></tr>
+              <tr><td>CEO 1</td><td><span class="demo-role admin-tag">Admin</span></td><td><code>ceo1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>HR Manager 1</td><td><span class="demo-role admin-tag">Admin</span></td><td><code>hrmanager1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Financial Manager 1</td><td><span class="demo-role manager-tag">Manager</span></td><td><code>financialmanager1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Tech Manager 1</td><td><span class="demo-role admin-tag">Admin</span></td><td><code>tech1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Product Manager 1</td><td><span class="demo-role manager-tag">Manager</span></td><td><code>product1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Operations Manager 1</td><td><span class="demo-role manager-tag">Manager</span></td><td><code>operations1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Marketing Manager 1</td><td><span class="demo-role manager-tag">Manager</span></td><td><code>marketing1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>Sales Manager 1</td><td><span class="demo-role manager-tag">Manager</span></td><td><code>sales1</code></td><td><code>admin@123</code></td></tr>
+              <tr><td>emp1.1</td><td><span class="demo-role employee-tag">Employee</span></td><td><code>emp1.1</code></td><td><code>user@123</code></td></tr>
+              <tr><td>emp1.2</td><td><span class="demo-role employee-tag">Employee</span></td><td><code>emp1.2</code></td><td><code>user@123</code></td></tr>
+              <tr><td>emp1.3</td><td><span class="demo-role employee-tag">Employee</span></td><td><code>emp1.3</code></td><td><code>user@123</code></td></tr>
+              <tr><td>emp 1.4</td><td><span class="demo-role employee-tag">Employee</span></td><td><code>emp1.4</code></td><td><code>user@123</code></td></tr>
+              <tr><td>emp 1.5</td><td><span class="demo-role employee-tag">Employee</span></td><td><code>emp1.5</code></td><td><code>user@123</code></td></tr>
+            </tbody>
+          </table>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/pages/login-page.js"></script>
+</body>
+</html>

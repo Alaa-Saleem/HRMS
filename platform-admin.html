@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HRMS Platform — Super Admin Console</title>
+  <meta name="description" content="Platform management console for HRMS SaaS — manage tenants, plans, subscriptions, billing, users, analytics, and system health." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080b12;
+      --bg-card: #0f1320;
+      --bg-card2: #141926;
+      --bg-hover: #1a2035;
+      --border: rgba(99,102,241,.15);
+      --border-glow: rgba(99,102,241,.4);
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --accent-glow: rgba(99,102,241,.22);
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --sidebar-w: 268px;
+      --radius: 14px;
+      --radius-sm: 9px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       LOGIN SCREEN
+    ══════════════════════════════════════════════════════ */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse 90% 60% at 50% 0%, rgba(99,102,241,.18) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,.1) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .login-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 48px 44px;
+      width: 450px;
+      max-width: 94vw;
+      box-shadow: 0 40px 100px rgba(0,0,0,.55), 0 0 0 1px var(--border);
+      animation: fadeUp .35s ease;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .login-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+    .login-logo-icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; color: #fff;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+    .login-logo-text { font-size: 21px; font-weight: 800; }
+    .login-logo-sub { font-size: 11px; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+    .login-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.25);
+      border-radius: 24px; padding: 5px 14px;
+      font-size: 11px; color: var(--accent2); font-weight: 700;
+      letter-spacing: .05em; margin: 18px 0 8px;
+    }
+    .login-title {
+      font-size: 26px; font-weight: 800; margin-bottom: 6px;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dim); margin-bottom: 7px; }
+    .form-input {
+      width: 100%; padding: 12px 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text); font-size: 14px;
+      transition: border .2s, box-shadow .2s;
+      outline: none; font-family: inherit;
+    }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    select.form-input option { background: var(--bg-card2); color: var(--text); }
+
+    .btn-primary {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border: none; border-radius: var(--radius-sm);
+      color: #fff; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: opacity .2s, transform .1s;
+      font-family: inherit;
+    }
+    .btn-primary:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+
+    .login-error {
+      background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      color: #fca5a5; font-size: 13px; margin-top: 16px; display: none;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       APP SHELL
+    ══════════════════════════════════════════════════════ */
+    #appShell { display: none; }
+    #appShell.visible { display: flex; min-height: 100vh; }
+
+    /* ══════════════════════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh;
+      overflow-y: auto; overflow-x: hidden;
+    }
+
+    .sidebar-header { padding: 20px 18px 16px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo { display: flex; align-items: center; gap: 11px; }
+    .sidebar-logo-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .sidebar-logo-text { font-size: 15px; font-weight: 800; }
+    .sidebar-logo-badge {
+      font-size: 9px; color: var(--accent2);
+      background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.2);
+      border-radius: 4px; padding: 2px 7px; font-weight: 700;
+      letter-spacing: .05em; margin-top: 2px; display: inline-block;
+    }
+
+    .sidebar-user {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 13px; font-weight: 700; }
+    .sidebar-user-role { font-size: 10px; color: var(--accent2); font-weight: 600; text-transform: uppercase; }
+
+    .sidebar-nav { padding: 10px 10px; flex: 1; }
+
+    .nav-section-label {
+      font-size: 10.5px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: 14px 10px 5px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--radius-sm);
+      cursor: pointer; transition: background .15s, color .15s;
+      color: var(--text-dim); font-size: 13.5px; font-weight: 600;
+      margin-bottom: 2px; border: none; background: none;
+      width: 100%; text-align: right; font-family: inherit;
+    }
+    .nav-item:hover { background: rgba(99,102,241,.09); color: var(--text); }
+    .nav-item.active { background: rgba(99,102,241,.18); color: var(--accent2); font-weight: 700; border-right: 3px solid var(--accent2); }
+    .nav-item-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
+
+    .sidebar-footer { padding: 14px; border-top: 1px solid var(--border); }
+    .btn-logout {
+      width: 100%; padding: 10px;
+      background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.18);
+      border-radius: var(--radius-sm); color: #fca5a5;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background .2s; font-family: inherit;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,.16); }
+
+    /* ══════════════════════════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════════════════════════ */
+    .main-content { flex: 1; padding: 30px 36px; overflow-y: auto; min-width: 0; }
+
+    .page { display: none; }
+    .page.active { display: block; animation: fadeUp .25s ease; }
+
+    .page-header { margin-bottom: 26px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .page-title { font-size: 25px; font-weight: 800; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ══════════════════════════════════════════════════════
+       INTERACTIVE STATS GRID
+    ══════════════════════════════════════════════════════ */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 16px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .stat-card:hover { border-color: var(--border-glow); box-shadow: 0 0 24px var(--accent-glow); transform: translateY(-3px); }
+    .stat-card::after {
+      content: 'عرض ←'; position: absolute; left: 14px; top: 18px;
+      font-size: 11px; font-weight: 700; color: var(--accent2); opacity: 0;
+      transition: opacity .2s;
+    }
+    .stat-card:hover::after { opacity: 1; }
+    .stat-icon { font-size: 22px; margin-bottom: 8px; }
+    .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { font-size: 32px; font-weight: 800; margin: 4px 0 2px; }
+    .stat-sub { font-size: 11.5px; color: var(--text-muted); }
+    .stat-green  { color: var(--green); }
+    .stat-blue   { color: var(--blue); }
+    .stat-yellow { color: var(--yellow); }
+    .stat-red    { color: var(--red); }
+    .stat-accent { color: var(--accent2); }
+    .stat-purple { color: var(--purple); }
+
+    /* ══════════════════════════════════════════════════════
+       GRID & CARDS
+    ══════════════════════════════════════════════════════ */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .table-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 22px;
+    }
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      gap: 12px; flex-wrap: wrap;
+    }
+    .table-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .table-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .search-input {
+      padding: 8px 14px; background: rgba(255,255,255,.04);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); font-size: 13px; outline: none;
+      font-family: inherit; min-width: 200px; transition: border .2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+
+    .filter-select {
+      padding: 8px 12px; background: rgba(255,255,255,.04);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); font-size: 13px; outline: none;
+      font-family: inherit; cursor: pointer;
+    }
+    .filter-select:focus { border-color: var(--accent); }
+    .filter-select option { background: var(--bg-card2); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 18px; text-align: right; }
+    th {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.02);
+      border-bottom: 1px solid var(--border);
+    }
+    tr:not(:last-child) td { border-bottom: 1px solid rgba(255,255,255,.04); }
+    tr:hover td { background: rgba(99,102,241,.04); }
+    td { font-size: 13.5px; color: var(--text-dim); }
+    td strong { color: var(--text); font-weight: 600; }
+
+    /* ══════════════════════════════════════════════════════
+       BUTTONS
+    ══════════════════════════════════════════════════════ */
+    .btn {
+      padding: 9px 18px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      border: none; font-family: inherit; transition: opacity .2s, transform .1s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-accent  { background: linear-gradient(135deg, var(--accent), var(--purple)); color: #fff; }
+    .btn-ghost   { background: rgba(255,255,255,.06); border: 1px solid var(--border); color: var(--text-dim); }
+    .btn-danger  { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; }
+    .btn-success { background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.3); color: var(--green); }
+    .btn-warn    { background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3); color: var(--yellow); }
+    .btn-impersonate { background: linear-gradient(135deg, #0ea5e9, #6366f1); color: #fff; border: none; font-weight: 700; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .tbl-btn {
+      padding: 5px 10px; border-radius: 6px;
+      font-size: 11.5px; font-weight: 600;
+      cursor: pointer; border: 1px solid;
+      transition: background .15s, transform .1s; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .tbl-btn:hover { transform: translateY(-1px); }
+    .tbl-btn-view    { background: transparent; border-color: var(--border); color: var(--text-dim); }
+    .tbl-btn-view:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .tbl-btn-impersonate { background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.3); color: #38bdf8; }
+    .tbl-btn-impersonate:hover { background: rgba(14,165,233,.22); }
+    .tbl-btn-suspend { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.3); color: var(--yellow); }
+    .tbl-btn-delete  { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); color: var(--red); }
+    .tbl-btn-edit    { background: rgba(99,102,241,.1); border-color: rgba(99,102,241,.3); color: var(--accent2); }
+
+    /* ══════════════════════════════════════════════════════
+       BADGES
+    ══════════════════════════════════════════════════════ */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .badge-active    { background: rgba(16,185,129,.12);  color: var(--green);      }  .badge-active::before  { background: var(--green); }
+    .badge-trial     { background: rgba(245,158,11,.12);  color: var(--yellow);     }  .badge-trial::before   { background: var(--yellow); }
+    .badge-suspended { background: rgba(239,68,68,.12);   color: var(--red);        }  .badge-suspended::before { background: var(--red); }
+    .badge-cancelled { background: rgba(100,116,139,.15); color: var(--text-muted); }  .badge-cancelled::before { background: var(--text-muted); }
+    .badge-past_due  { background: rgba(249,115,22,.12);  color: var(--orange);     }  .badge-past_due::before  { background: var(--orange); }
+    .badge-super_admin   { background: rgba(99,102,241,.15); color: var(--accent2); }
+    .badge-support_agent { background: rgba(59,130,246,.12); color: var(--blue); }
+    .badge-billing_admin { background: rgba(16,185,129,.12); color: var(--green); }
+
+    /* ══════════════════════════════════════════════════════
+       MODAL & FORM SECTION
+    ══════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+    .modal {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 32px;
+      width: 560px; max-width: 95vw;
+      animation: fadeUp .25s ease;
+      box-shadow: 0 50px 120px rgba(0,0,0,.65);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-lg { width: 720px; }
+    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+    .modal-section {
+      background: rgba(255,255,255,.02); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; margin-bottom: 18px;
+    }
+    .modal-section-title {
+      font-size: 12.5px; font-weight: 800; color: var(--accent2);
+      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .modal-footer {
+      display: flex; gap: 10px; justify-content: flex-end;
+      margin-top: 24px; padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .info-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px 24px; margin-bottom: 20px;
+    }
+    .info-card-title { font-size: 13.5px; font-weight: 800; color: var(--text-dim); margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { font-size: 13px; color: var(--text-muted); }
+    .info-val { font-size: 13.5px; color: var(--text); font-weight: 600; }
+
+    /* ══════════════════════════════════════════════════════
+       TABS
+    ══════════════════════════════════════════════════════ */
+    .tabs { display: flex; gap: 4px; margin-bottom: 22px; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: 10px 18px; border: none; background: none;
+      color: var(--text-muted); font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); font-weight: 700; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn .2s ease; }
+
+    .audit-item {
+      padding: 13px 20px; border-bottom: 1px solid rgba(255,255,255,.04);
+      display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start;
+    }
+    .audit-item:hover { background: rgba(255,255,255,.02); }
+    .audit-action { font-size: 13px; font-weight: 700; color: var(--text); }
+    .audit-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .audit-time { font-size: 11px; color: var(--text-muted); }
+
+    .status-dot { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+    .status-dot::before { content: ''; width: 8px; height: 8px; border-radius: 50%; }
+    .status-ok::before { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .status-err::before { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+    .progress-bar { height: 6px; background: rgba(255,255,255,.07); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--purple)); }
+
+    /* ══════════════════════════════════════════════════════
+       PLAN CARDS
+    ══════════════════════════════════════════════════════ */
+    .plan-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .plan-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+    .plan-card:hover { border-color: var(--border-glow); box-shadow: 0 0 28px var(--accent-glow); transform: translateY(-2px); }
+    .plan-card-name { font-size: 20px; font-weight: 800; }
+    .plan-card-price { font-size: 30px; font-weight: 800; color: var(--accent2); margin: 8px 0 4px; }
+    .plan-card-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+    .plan-card-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
+    .plan-card-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .plan-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim); padding: 5px 0; }
+    .plan-card-footer { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .health-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .health-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .health-icon { font-size: 28px; }
+    .health-label { font-size: 14px; font-weight: 700; }
+    .health-status { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .breadcrumb-link { cursor: pointer; color: var(--accent2); font-weight: 700; }
+    .breadcrumb-link:hover { text-decoration: underline; }
+    .breadcrumb-sep { opacity: .4; }
+
+    .loading-spinner { text-align: center; padding: 50px 20px; color: var(--text-muted); font-size: 14px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-state-icon { font-size: 44px; margin-bottom: 14px; }
+    .empty-state-text { font-size: 15px; font-weight: 600; color: var(--text-dim); }
+
+    #toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg-card2); border: 1px solid var(--border-glow);
+      border-radius: 12px; padding: 13px 26px;
+      font-size: 14px; font-weight: 600;
+      box-shadow: 0 10px 36px rgba(0,0,0,.45);
+      z-index: 9999; transition: transform .3s ease, opacity .3s;
+      opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.toast-success { border-color: rgba(16,185,129,.4); color: var(--green); }
+    #toast.toast-error   { border-color: rgba(239,68,68,.4);  color: #fca5a5; }
+
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-top: 1px solid var(--border);
+    }
+    .pagination-info { font-size: 13px; color: var(--text-muted); }
+    .pagination-btns { display: flex; gap: 6px; }
+    .page-btn {
+      padding: 5px 12px; border-radius: 6px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-dim); font-size: 13px; cursor: pointer;
+      font-family: inherit; transition: background .15s;
+    }
+    .page-btn:hover { background: rgba(99,102,241,.1); }
+    .page-btn.active { background: rgba(99,102,241,.18); color: var(--accent2); border-color: rgba(99,102,241,.3); }
+    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .tenant-detail-header {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px 30px; margin-bottom: 22px;
+    }
+    .tenant-detail-name { font-size: 25px; font-weight: 800; margin-bottom: 8px; }
+    .tenant-detail-meta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+    .tenant-detail-meta-item { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+    .tenant-detail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tenant-mini-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 20px; }
+    .tenant-mini-stat { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+    .tenant-mini-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+    .tenant-mini-stat-value { font-size: 22px; font-weight: 800; margin-top: 4px; }
+
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+    .toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,.1); border-radius: 24px;
+      transition: background .2s; cursor: pointer;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      height: 18px; width: 18px; left: 3px; top: 3px;
+      border-radius: 50%; background: #fff;
+      transition: transform .2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    @media (max-width: 960px) {
+      :root { --sidebar-w: 220px; }
+      .main-content { padding: 20px 18px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">H</div>
+      <div>
+        <div class="login-logo-text">HRMS Platform</div>
+        <div class="login-logo-sub">SaaS Management Console</div>
+      </div>
+    </div>
+    <div class="login-badge">🛡️ SUPER ADMIN PORTAL</div>
+    <h1 class="login-title">تسجيل دخول المنصة</h1>
+    <p class="login-sub">إدارة جميع الشركات المشتركة، الاشتراكات، والتحكم الفائق في المنصة.</p>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">البريد الإلكتروني / اسم المستخدم</label>
+        <input type="text" id="loginEmail" class="form-input" placeholder="admin@platform.corp" autocomplete="username" dir="ltr" value="admin@platform.corp" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPassword">كلمة المرور</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password" dir="ltr" value="admin@123" />
+      </div>
+      <button type="submit" class="btn-primary" id="loginBtn">تسجيل الدخول إلى المنصة</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════════════ -->
+<div id="appShell">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">H</div>
+        <div>
+          <div class="sidebar-logo-text">HRMS Platform</div>
+          <div class="sidebar-logo-badge">SUPER ADMIN</div>
+        </div>
+      </div>
+      <div class="sidebar-user" id="sidebarUser">
+        <div class="sidebar-avatar" id="sidebarAvatar">A</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebarName">Super Admin</div>
+          <div class="sidebar-user-role" id="sidebarRole">SUPER ADMIN</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">لوحة التحكم</div>
+      <button class="nav-item active" data-page="dashboard" id="nav-dashboard" onclick="navigate('dashboard')">
+        <span class="nav-item-icon">📊</span> Dashboard
+      </button>
+
+      <div class="nav-section-label">إدارة الشركات</div>
+      <button class="nav-item" data-page="tenants" id="nav-tenants" onclick="navigate('tenants')">
+        <span class="nav-item-icon">🏢</span> الشركات (Tenants)
+      </button>
+
+      <div class="nav-section-label">الفوترة والاشتراكات</div>
+      <button class="nav-item" data-page="subscriptions" id="nav-subscriptions" onclick="navigate('subscriptions')">
+        <span class="nav-item-icon">🔄</span> الاشتراكات
+      </button>
+      <button class="nav-item" data-page="plans" id="nav-plans" onclick="navigate('plans')">
+        <span class="nav-item-icon">💎</span> خطط الاشتراك
+      </button>
+
+      <div class="nav-section-label">الفريق والصلاحيات</div>
+      <button class="nav-item" data-page="platform-users" id="nav-platform-users" onclick="navigate('platform-users')">
+        <span class="nav-item-icon">👥</span> مستخدمو المنصة
+      </button>
+
+      <div class="nav-section-label">المراقبة والأمان</div>
+      <button class="nav-item" data-page="audit" id="nav-audit" onclick="navigate('audit')">
+        <span class="nav-item-icon">🔍</span> سجل الأحداث (Audit)
+      </button>
+      <button class="nav-item" data-page="system-health" id="nav-system-health" onclick="navigate('system-health')">
+        <span class="nav-item-icon">❤️</span> حالة النظام (Health)
+      </button>
+
+      <div class="nav-section-label">الإعدادات</div>
+      <button class="nav-item" data-page="settings" id="nav-settings" onclick="navigate('settings')">
+        <span class="nav-item-icon">⚙️</span> الإعدادات العامة
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="doLogout()">🚪 تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ──────────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- ════════ 1. DASHBOARD ════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">لوحة التحكم الرئيسية</h1>
+          <p class="page-subtitle">نظرة تفاعلية شاملة على أداء المنصة وكل الشركات والاشتراكات</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-accent btn-sm" onclick="openCreateTenantModal()">＋ إضافة شركة جديدة</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadDashboard()">↻ تحديث</button>
+        </div>
+      </div>
+
+      <!-- Interactive Stats Cards -->
+      <div class="stats-grid" id="dashStatsGrid">
+        <div class="stat-card" onclick="navigate('tenants')" title="عرض جميع الشركات">
+          <div class="stat-icon">🏢</div>
+          <div class="stat-label">إجمالي الشركات</div>
+          <div class="stat-value stat-accent" id="dStatTotal">—</div>
+          <div class="stat-sub">جميع الشركات المسجلة</div>
+        </div>
+        <div class="stat-card" onclick="navigate('tenants', {status: 'active'})" title="تصفية الشركات النشطة">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">شركات نشطة</div>
+          <div class="stat-value stat-green" id="dStatActive">—</div>
+          <div class="stat-sub">حسابات مفعلة</div>
+        </div>
+        <div class="stat-card" onclick="navigate('tenants', {status: 'trial'})" title="تصفية الشركات التجريبية">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">فترة تجريبية</div>
+          <div class="stat-value stat-yellow" id="dStatTrial">—</div>
+          <div class="stat-sub">Trial Accounts</div>
+        </div>
+        <div class="stat-card" onclick="navigate('tenants', {status: 'suspended'})" title="تصفية الشركات الموقوفة">
+          <div class="stat-icon">🚫</div>
+          <div class="stat-label">شركات معلقة</div>
+          <div class="stat-value stat-red" id="dStatSuspended">—</div>
+          <div class="stat-sub">Suspended</div>
+        </div>
+        <div class="stat-card" onclick="navigate('tenants')" title="عرض قائمة الشركات والموظفين">
+          <div class="stat-icon">👤</div>
+          <div class="stat-label">إجمالي الموظفين</div>
+          <div class="stat-value stat-blue" id="dStatEmployees">—</div>
+          <div class="stat-sub">عبر كل الشركات</div>
+        </div>
+        <div class="stat-card" onclick="navigate('subscriptions', {status: 'active'})" title="عرض الاشتراكات النشطة">
+          <div class="stat-icon">🔄</div>
+          <div class="stat-label">اشتراكات نشطة</div>
+          <div class="stat-value stat-purple" id="dStatSubs">—</div>
+          <div class="stat-sub">Active & Trial</div>
+        </div>
+      </div>
+
+      <!-- Bottom grid -->
+      <div class="grid-2">
+        <!-- Recent Activity -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">📋 آخر الأحداث (Audit Stream)</div>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('audit')">سجل الأحداث الكامل ←</button>
+          </div>
+          <div id="dashRecentAudit">
+            <div class="loading-spinner">جاري التحميل…</div>
+          </div>
+        </div>
+
+        <!-- Top Tenants + System Status -->
+        <div>
+          <div class="table-card" style="margin-bottom:20px">
+            <div class="table-header">
+              <div class="table-title">🏆 أكبر الشركات (بحجم الموظفين)</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('tenants')">عرض الكل ←</button>
+            </div>
+            <div id="dashTopTenants">
+              <div class="loading-spinner">جاري التحميل…</div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-title">🟢 حالة خوادم المنصة</div>
+            <div class="info-row">
+              <span class="info-key">API Server (FastAPI)</span>
+              <span class="info-val" id="healthAPI"><span class="status-dot status-ok">Checking…</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">PostgreSQL Database</span>
+              <span class="info-val" id="healthDB"><span class="status-dot status-ok">Checking…</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">فريق إدارة المنصة</span>
+              <span class="info-val" id="dStatPlatUsers">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 2. TENANTS ════════ -->
+    <div class="page" id="page-tenants">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">إدارة الشركات المشتركة (Tenants)</h1>
+          <p class="page-subtitle">عرض، تصفية، تعديل، وتسجيل الدخول المباشر كمسؤول في أي شركة</p>
+        </div>
+        <button class="btn btn-accent" onclick="openCreateTenantModal()">＋ شركة جديدة مع حساب المسؤول</button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">قائمة الشركات <span id="tenantsCount" style="font-size:12px;color:var(--text-muted);font-weight:400"></span></div>
+          <div class="table-actions">
+            <input type="text" class="search-input" id="tenantSearch" placeholder="🔍 بحث بالاسم أو المعرف…" oninput="onTenantSearch()" />
+            <select class="filter-select" id="tenantStatusFilter" onchange="loadTenants()">
+              <option value="">جميع الحالات</option>
+              <option value="active">Active (نشط)</option>
+              <option value="trial">Trial (تجريبي)</option>
+              <option value="suspended">Suspended (معلق)</option>
+              <option value="cancelled">Cancelled (ملغي)</option>
+            </select>
+            <select class="filter-select" id="tenantPlanFilter" onchange="loadTenants()">
+              <option value="">جميع الباقات</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="loadTenants()">↻</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الشركة</th>
+              <th>الحالة</th>
+              <th>الموظفون</th>
+              <th>الخطة</th>
+              <th>الاشتراك</th>
+              <th>المسؤول</th>
+              <th>إجراءات وتحكم</th>
+            </tr>
+          </thead>
+          <tbody id="tenantsTableBody">
+            <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">جاري التحميل…</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="tenantsPagination" style="display:none">
+          <span class="pagination-info" id="tenantsPaginationInfo"></span>
+          <div class="pagination-btns" id="tenantsPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 3. TENANT DETAIL (Interactive Page) ════════ -->
+    <div class="page" id="page-tenant-detail">
+      <div class="breadcrumb">
+        <span class="breadcrumb-link" onclick="navigate('tenants')">🏢 الشركات المشتركة</span>
+        <span class="breadcrumb-sep">›</span>
+        <span id="tdBreadcrumbName">تفاصيل الشركة</span>
+      </div>
+
+      <div class="tenant-detail-header" id="tdHeader">
+        <div class="loading-spinner">جاري تحميل بيانات الشركة…</div>
+      </div>
+
+      <div class="tabs" id="tdTabs">
+        <button class="tab-btn active" onclick="switchTab('tdTab','overview')">📊 نظرة عامة والخطة</button>
+        <button class="tab-btn" onclick="switchTab('tdTab','employees')">👥 موظفو الشركة (<span id="tdEmpCountTab">0</span>)</button>
+        <button class="tab-btn" onclick="switchTab('tdTab','subscription')">💳 الاشتراك والفوترة</button>
+        <button class="tab-btn" onclick="switchTab('tdTab','activity')">📋 سجل أحداث الشركة</button>
+      </div>
+
+      <!-- Tab 1: Overview -->
+      <div class="tab-pane active" id="tdTab-overview">
+        <div class="grid-2" id="tdOverviewGrid">
+          <div class="loading-spinner">جاري التحميل…</div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Employees of this tenant -->
+      <div class="tab-pane" id="tdTab-employees">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">👥 موظفو وحسابات هذه الشركة</div>
+            <button class="btn btn-ghost btn-sm" onclick="loadTenantEmployeesTab()">↻ تحديث</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الاسم الكامل</th>
+                <th>البريد الإلكتروني</th>
+                <th>الدور والصلاحية</th>
+                <th>المسمى الوظيفي</th>
+                <th>القسم</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="tdEmployeesTableBody">
+              <tr><td colspan="7" style="text-align:center;padding:30px">جاري التحميل…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 3: Subscription -->
+      <div class="tab-pane" id="tdTab-subscription">
+        <div id="tdSubscriptionContent">
+          <div class="loading-spinner">جاري التحميل…</div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Activity -->
+      <div class="tab-pane" id="tdTab-activity">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">سجل العمليات الخاصة بهذه الشركة</div>
+          </div>
+          <div id="tdActivityList">
+            <div class="loading-spinner">جاري التحميل…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 4. SUBSCRIPTIONS ════════ -->
+    <div class="page" id="page-subscriptions">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">إدارة الاشتراكات والفوترة</h1>
+          <p class="page-subtitle">متابعة وتجديد وتعديل خطط اشتراك الشركات</p>
+        </div>
+        <button class="btn btn-accent" onclick="openModal('createSubModal')">＋ اشتراك جديد</button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">قائمة الاشتراكات <span id="subsCount" style="font-size:12px;color:var(--text-muted);font-weight:400"></span></div>
+          <div class="table-actions">
+            <select class="filter-select" id="subStatusFilter" onchange="loadSubscriptions()">
+              <option value="">جميع الحالات</option>
+              <option value="active">Active (نشط)</option>
+              <option value="trial">Trial (تجريبي)</option>
+              <option value="past_due">Past Due (متأخر)</option>
+              <option value="expired">Expired (منتهي)</option>
+              <option value="cancelled">Cancelled (ملغي)</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="loadSubscriptions()">↻</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الشركة</th>
+              <th>الخطة</th>
+              <th>الحالة</th>
+              <th>تاريخ البداية</th>
+              <th>نهاية الفترة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="subsTableBody">
+            <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">جاري التحميل…</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="subsPagination" style="display:none">
+          <span class="pagination-info" id="subsPaginationInfo"></span>
+          <div class="pagination-btns" id="subsPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 5. PLANS ════════ -->
+    <div class="page" id="page-plans">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">خطط وباقات الاشتراك</h1>
+          <p class="page-subtitle">تحديد الأسعار، الميزات، وحدود الموظفين والتخزين</p>
+        </div>
+        <button class="btn btn-accent" onclick="openModal('createPlanModal')">＋ خطة جديدة</button>
+      </div>
+      <div class="plan-cards" id="plansGrid">
+        <div class="loading-spinner" style="grid-column:1/-1">جاري التحميل…</div>
+      </div>
+    </div>
+
+    <!-- ════════ 6. PLATFORM USERS ════════ -->
+    <div class="page" id="page-platform-users">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">فريق إدارة المنصة (Platform Team)</h1>
+          <p class="page-subtitle">مسؤولو السوبر أدمن والدعم الفني — منفصلون عن موظفي الشركات</p>
+        </div>
+        <button class="btn btn-accent" id="btnAddUser" onclick="openModal('createUserModal')">＋ إضافة مسؤول منصة</button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">أعضاء الفريق</div>
+          <div class="table-actions">
+            <button class="btn btn-ghost btn-sm" onclick="loadPlatformUsers()">↻ تحديث</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم الكامل</th>
+              <th>البريد الإلكتروني</th>
+              <th>الدور والصلاحية</th>
+              <th>الحالة</th>
+              <th>آخر دخول</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">جاري التحميل…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════ 7. AUDIT LOG ════════ -->
+    <div class="page" id="page-audit">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">سجل الأحداث والعمليات (Audit Log)</h1>
+          <p class="page-subtitle">تتبع كافة العمليات الحساسة في المنصة من إنشاء شركات وتغيير باقات</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="loadAudit()">↻ تحديث</button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">سجل الأحداث <span id="auditCount" style="font-size:12px;color:var(--text-muted);font-weight:400"></span></div>
+          <div class="table-actions">
+            <input type="text" class="search-input" id="auditSearch" placeholder="🔍 بحث في العمليات…" oninput="loadAudit()" />
+            <select class="filter-select" id="auditTenantFilter" onchange="loadAudit()">
+              <option value="">جميع الشركات</option>
+            </select>
+          </div>
+        </div>
+        <div id="auditList">
+          <div class="loading-spinner">جاري التحميل…</div>
+        </div>
+        <div class="pagination" id="auditPagination" style="display:none">
+          <span class="pagination-info" id="auditPaginationInfo"></span>
+          <div class="pagination-btns" id="auditPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 8. SYSTEM HEALTH ════════ -->
+    <div class="page" id="page-system-health">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">حالة النظام والخدمات (System Health)</h1>
+          <p class="page-subtitle">فحص حي ومباشر لكافة خدمات الخادم وقاعدة البيانات</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="loadSystemHealth()">↻ فحص الآن</button>
+      </div>
+
+      <div class="health-grid" id="healthGrid">
+        <div class="loading-spinner" style="grid-column:1/-1">جاري الفحص…</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">📊 معلومات الخادم والبيئة</div>
+        <div class="info-row"><span class="info-key">API Version</span><span class="info-val" id="sysApiVersion">v0.2.0</span></div>
+        <div class="info-row"><span class="info-key">API Endpoint URL</span><span class="info-val" dir="ltr" id="sysApiUrl">—</span></div>
+        <div class="info-row"><span class="info-key">آخر فحص تشغيلي</span><span class="info-val" id="sysLastCheck">—</span></div>
+        <div class="info-row"><span class="info-key">عدد مسؤولي المنصة</span><span class="info-val" id="sysPlUsers">—</span></div>
+        <div class="info-row"><span class="info-key">إجمالي الشركات المسجلة</span><span class="info-val" id="sysTenants">—</span></div>
+      </div>
+    </div>
+
+    <!-- ════════ 9. SETTINGS ════════ -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">إعدادات المنصة العامة</h1>
+          <p class="page-subtitle">إعدادات الأمان، الروابط، والمصادقة</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="info-card">
+          <div class="info-card-title">🛡️ إعدادات الأمان والمصادقة</div>
+          <div class="info-row"><span class="info-key">JWT Access Token</span><span class="info-val">30 دقيقة</span></div>
+          <div class="info-row"><span class="info-key">تشفير كلمات المرور</span><span class="info-val" dir="ltr">bcrypt + PBKDF2</span></div>
+          <div class="info-row"><span class="info-key">حالة الجلسة الحالية</span><span class="info-val" id="settingsTokenStatus">✅ صالحة</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">🌐 روابط سريعة للخدمات</div>
+          <div class="info-row"><span class="info-key">توثيق الواجهات (Swagger)</span><span class="info-val"><a id="settingsDocsLink" href="#" target="_blank" style="color:var(--accent2)">/docs ↗</a></span></div>
+          <div class="info-row"><span class="info-key">بوابة تسجيل الدخول للشركات</span><span class="info-val"><a href="login.html" target="_blank" style="color:var(--green)">/login.html ↗</a></span></div>
+          <div class="info-row"><span class="info-key">فحص الصحة (Healthcheck)</span><span class="info-val"><a id="settingsHealthLink" href="#" target="_blank" style="color:var(--blue)">/healthz ↗</a></span></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════════════ -->
+
+<!-- CREATE TENANT MODAL (With full admin credentials setup) -->
+<div class="modal-overlay" id="createTenantModal">
+  <div class="modal modal-lg">
+    <div class="modal-title">🏢 إضافة شركة جديدة مع بيانات المسؤول</div>
+    <div class="modal-sub">سيتم إنشاء الشركة وتجهيز حساب المسؤول الأول (Company Admin) فوراً لتسجيل الدخول</div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">🏢 1. بيانات الشركة الأساسية</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">اسم الشركة *</label>
+          <input type="text" class="form-input" id="newTenantName" placeholder="مثال: شركة الرواد التقنية" oninput="autoSlugify()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">المعرّف الفريد (Slug) *</label>
+          <input type="text" class="form-input" id="newTenantSlug" placeholder="alrowad-tech" dir="ltr" />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">باقة الاشتراك</label>
+          <select class="form-input" id="newTenantPlan"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">حالة الحساب الأولية</label>
+          <select class="form-input" id="newTenantStatus">
+            <option value="trial">تجريبي (Trial)</option>
+            <option value="active">نشط ومفعل (Active)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">👤 2. بيانات حساب مدير الشركة الأول (Company Admin)</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">اسم المسؤول / المدير *</label>
+          <input type="text" class="form-input" id="newAdminName" placeholder="مثال: فهد القحطاني" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني للدخول *</label>
+          <input type="email" class="form-input" id="newAdminEmail" placeholder="ceo@company.corp" dir="ltr" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+          <label class="form-label" style="margin:0">كلمة المرور للدخول *</label>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:11px" onclick="generateAdminPassword()">🎲 توليد كلمة مرور</button>
+        </div>
+        <input type="text" class="form-input" id="newAdminPassword" value="admin@123" dir="ltr" />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createTenantModal')">إلغاء</button>
+      <button class="btn btn-accent" id="btnSubmitTenant" onclick="submitCreateTenant()">✓ إنشاء الشركة وحساب المدير</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT TENANT MODAL -->
+<div class="modal-overlay" id="editTenantModal">
+  <div class="modal">
+    <div class="modal-title">✏️ تعديل بيانات الشركة</div>
+    <input type="hidden" id="editTenantId" />
+    <div class="form-group">
+      <label class="form-label">اسم الشركة</label>
+      <input type="text" class="form-input" id="editTenantName" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">بريد المسؤول</label>
+      <input type="email" class="form-input" id="editTenantEmail" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الخطة</label>
+      <select class="form-input" id="editTenantPlan"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الحالة</label>
+      <select class="form-input" id="editTenantStatus">
+        <option value="active">Active (نشط)</option>
+        <option value="trial">Trial (تجريبي)</option>
+        <option value="suspended">Suspended (معلق)</option>
+        <option value="cancelled">Cancelled (ملغي)</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('editTenantModal')">إلغاء</button>
+      <button class="btn btn-accent" onclick="submitEditTenant()">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUSPEND MODAL -->
+<div class="modal-overlay" id="suspendModal">
+  <div class="modal">
+    <div class="modal-title">⚠️ تعليق حساب الشركة</div>
+    <div class="modal-sub">سيُمنع جميع موظفي هذه الشركة من الدخول. البيانات تبقى محفوظة بالكامل.</div>
+    <div class="form-group">
+      <label class="form-label">سبب التعليق</label>
+      <input type="text" class="form-input" id="suspendReason" placeholder="مثال: انتهاء فترة التجربة / عدم سداد الفاتورة" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('suspendModal')">إلغاء</button>
+      <button class="btn btn-danger" onclick="confirmSuspend()">تأكيد التعليق</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE PLAN MODAL -->
+<div class="modal-overlay" id="createPlanModal">
+  <div class="modal">
+    <div class="modal-title">💎 خطة اشتراك جديدة</div>
+    <div class="form-group">
+      <label class="form-label">اسم الخطة *</label>
+      <input type="text" class="form-input" id="newPlanName" placeholder="مثال: Premium Business" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">السعر الشهري ($)</label>
+      <input type="number" class="form-input" id="newPlanPrice" placeholder="79" min="0" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الحد الأقصى للموظفين</label>
+      <input type="number" class="form-input" id="newPlanMaxEmp" placeholder="500" min="1" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">حجم التخزين (MB)</label>
+      <input type="number" class="form-input" id="newPlanStorage" placeholder="102400" min="1" dir="ltr" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createPlanModal')">إلغاء</button>
+      <button class="btn btn-accent" onclick="createPlan()">إنشاء الخطة</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PLAN MODAL -->
+<div class="modal-overlay" id="editPlanModal">
+  <div class="modal">
+    <div class="modal-title">✏️ تعديل باقة الاشتراك</div>
+    <input type="hidden" id="editPlanId" />
+    <div class="form-group">
+      <label class="form-label">اسم الخطة</label>
+      <input type="text" class="form-input" id="editPlanName" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">السعر الشهري ($)</label>
+      <input type="number" class="form-input" id="editPlanPrice" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الحد الأقصى للموظفين</label>
+      <input type="number" class="form-input" id="editPlanMaxEmp" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">حجم التخزين (MB)</label>
+      <input type="number" class="form-input" id="editPlanStorage" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الحالة</label>
+      <select class="form-input" id="editPlanActive">
+        <option value="true">نشط ومتاح للاشتراك</option>
+        <option value="false">معطل ومخفي</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('editPlanModal')">إلغاء</button>
+      <button class="btn btn-accent" onclick="submitEditPlan()">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE SUBSCRIPTION MODAL -->
+<div class="modal-overlay" id="createSubModal">
+  <div class="modal">
+    <div class="modal-title">🔄 اشتراك جديد لشركة</div>
+    <div class="form-group">
+      <label class="form-label">الشركة *</label>
+      <select class="form-input" id="newSubTenant"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الخطة *</label>
+      <select class="form-input" id="newSubPlan"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الحالة</label>
+      <select class="form-input" id="newSubStatus">
+        <option value="active">Active (نشط)</option>
+        <option value="trial">Trial (تجريبي)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">تاريخ انتهاء الفترة</label>
+      <input type="date" class="form-input" id="newSubPeriodEnd" dir="ltr" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createSubModal')">إلغاء</button>
+      <button class="btn btn-accent" onclick="createSubscription()">تفعيل الاشتراك</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE PLATFORM USER MODAL -->
+<div class="modal-overlay" id="createUserModal">
+  <div class="modal">
+    <div class="modal-title">👤 إضافة مسؤول جديد للمنصة</div>
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني *</label>
+      <input type="email" class="form-input" id="newUserEmail" placeholder="agent@platform.corp" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الاسم الكامل</label>
+      <input type="text" class="form-input" id="newUserName" placeholder="أحمد الرشيدي" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">كلمة المرور *</label>
+      <input type="password" class="form-input" id="newUserPassword" dir="ltr" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الصلاحية والدور</label>
+      <select class="form-input" id="newUserRole">
+        <option value="support_agent">Support Agent (دعم فني)</option>
+        <option value="billing_admin">Billing Admin (مسؤول فوترة)</option>
+        <option value="super_admin">Super Admin (سوبر أدمن كامل)</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createUserModal')">إلغاء</button>
+      <button class="btn btn-accent" onclick="createPlatformUser()">إضافة المسؤول</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT LOGIC
+═══════════════════════════════════════════════════════════════ -->
+<script type="module">
+const API = (() => {
+  if (window.location.port === '8787') return window.location.origin.replace(/\/+$/, '');
+  return 'http://127.0.0.1:8787';
+})();
+
+const STORAGE = {
+  token:   () => sessionStorage.getItem('pa_token'),
+  refresh: () => sessionStorage.getItem('pa_refresh'),
+  user:    () => JSON.parse(sessionStorage.getItem('pa_user') || 'null'),
+  save: (a, r, u) => {
+    sessionStorage.setItem('pa_token',   a);
+    sessionStorage.setItem('pa_refresh', r);
+    sessionStorage.setItem('pa_user',    JSON.stringify(u));
+  },
+  clear: () => {
+    sessionStorage.removeItem('pa_token');
+    sessionStorage.removeItem('pa_refresh');
+    sessionStorage.removeItem('pa_user');
+  }
+};
+
+let _plans = [];
+let _tenants = [];
+let _suspendId = null;
+let _currentTenantId = null;
+let _currentTenantData = null;
+let _auditPage = 1;
+let _subsPage  = 1;
+let _tenantsPage = 1;
+
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...opts.headers };
+  const token = STORAGE.token();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  try {
+    const res = await fetch(`${API}${path}`, { ...opts, headers });
+    if (res.status === 401 && !path.includes('/login')) {
+      STORAGE.clear(); showLogin(); return null;
+    }
+    return res;
+  } catch {
+    toast('❌ تعذر الاتصال بخادم المنصة', 'error'); return null;
+  }
+}
+
+async function apiJSON(path, opts = {}) {
+  const res = await api(path, opts);
+  if (!res) return null;
+  try { return { ok: res.ok, status: res.status, data: await res.json() }; }
+  catch { return { ok: res.ok, status: res.status, data: null }; }
+}
+
+function toast(msg, type = 'success', dur = 3200) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show toast-${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', dur);
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appShell').classList.remove('visible');
+}
+
+function showApp(user) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').classList.add('visible');
+  const name = user.full_name || user.email || 'Super Admin';
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('sidebarRole').textContent = (user.platform_role || '').replace(/_/g, ' ').toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = name.charAt(0).toUpperCase() || 'A';
+
+  loadPlansCache();
+  loadTenantsCache();
+  navigate('dashboard');
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  const raw = document.getElementById('loginEmail').value.trim();
+  const pw  = document.getElementById('loginPassword').value;
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'جاري التحقق…';
+
+  try {
+    const email = raw.includes('@') ? raw : `${raw}@platform.corp`;
+    const r = await apiJSON('/platform/auth/login', {
+      method: 'POST', body: JSON.stringify({ email, password: pw })
+    });
+    if (!r) return;
+    if (!r.ok || !r.data?.access_token) {
+      const msg = r.data?.detail ? (Array.isArray(r.data.detail) ? r.data.detail.map(d => d.msg).join(', ') : String(r.data.detail)) : 'بيانات الدخول غير صحيحة';
+      errEl.textContent = msg; errEl.style.display = 'block'; return;
+    }
+    STORAGE.save(r.data.access_token, r.data.refresh_token, r.data.user);
+    showApp(r.data.user);
+  } catch {
+    errEl.textContent = 'خطأ في الاتصال بالخادم'; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'تسجيل الدخول إلى المنصة';
+  }
+});
+
+window.doLogout = async function() {
+  const refresh = STORAGE.refresh();
+  if (refresh) await api('/platform/auth/logout', { method: 'POST', body: JSON.stringify({ refresh_token: refresh }) });
+  STORAGE.clear(); showLogin();
+};
+
+window.navigate = function(page, params = {}) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById(`page-${page}`);
+  if (!pageEl) return;
+  pageEl.classList.add('active');
+  const navEl = document.getElementById(`nav-${page}`);
+  if (navEl) navEl.classList.add('active');
+
+  if (page === 'tenants') {
+    if (params.status) {
+      const sel = document.getElementById('tenantStatusFilter');
+      if (sel) sel.value = params.status;
+    }
+    if (params.plan_id) {
+      const sel = document.getElementById('tenantPlanFilter');
+      if (sel) sel.value = params.plan_id;
+    }
+    loadTenants(1);
+  } else if (page === 'subscriptions') {
+    if (params.status) {
+      const sel = document.getElementById('subStatusFilter');
+      if (sel) sel.value = params.status;
+    }
+    loadSubscriptions(1);
+  } else {
+    const loaders = {
+      'dashboard':       loadDashboard,
+      'plans':           loadPlans,
+      'platform-users':  loadPlatformUsers,
+      'audit':           () => loadAudit(1, params),
+      'system-health':   loadSystemHealth,
+      'settings':        loadSettings,
+    };
+    if (loaders[page]) loaders[page]();
+  }
+};
+
+window.switchTab = function(prefix, tab) {
+  const parent = document.getElementById(`${prefix}-${tab}`)?.parentElement;
+  if (!parent) return;
+  parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`${prefix}-${tab}`)?.classList.add('active');
+
+  const tabContainer = parent.previousElementSibling;
+  if (tabContainer?.classList.contains('tabs')) {
+    tabContainer.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(`'${tab}'`));
+    });
+  }
+
+  if (tab === 'employees' && _currentTenantId) {
+    loadTenantEmployeesTab();
+  }
+};
+
+window.openModal  = id => document.getElementById(id)?.classList.add('open');
+window.closeModal = id => document.getElementById(id)?.classList.remove('open');
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+function fmt(n) { return (n ?? 0).toLocaleString('en'); }
+function fmtDate(s) { return s ? new Date(s).toLocaleDateString('en-GB') : '—'; }
+function fmtDateTime(s) { return s ? new Date(s).toLocaleString('ar') : '—'; }
+
+function statusBadge(st) {
+  const labels = { active:'Active', trial:'Trial', suspended:'Suspended', cancelled:'Cancelled', past_due:'Past Due', expired:'Expired' };
+  return `<span class="badge badge-${st}">${labels[st] || st}</span>`;
+}
+function roleBadge(r) {
+  const labels = { super_admin:'Super Admin', support_agent:'Support', billing_admin:'Billing' };
+  return `<span class="badge badge-${r}">${labels[r] || r}</span>`;
+}
+
+async function loadPlansCache() {
+  const r = await apiJSON('/platform/plans');
+  if (r?.ok) _plans = r.data || [];
+  populatePlanSelects();
+}
+
+async function loadTenantsCache() {
+  const r = await apiJSON('/platform/tenants?page_size=100');
+  if (r?.ok) _tenants = r.data?.items || [];
+  populateTenantSelects();
+}
+
+function populatePlanSelects() {
+  const noneOpt = '<option value="">— بدون خطة —</option>';
+  const opts = _plans.map(p => `<option value="${p.id}">${p.name} ($${p.price_usd}/mo)</option>`).join('');
+  ['newTenantPlan','editTenantPlan','newSubPlan'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = (id.includes('Tenant') ? noneOpt : '') + opts;
+  });
+  const filterEl = document.getElementById('tenantPlanFilter');
+  if (filterEl) {
+    filterEl.innerHTML = '<option value="">جميع الباقات</option>' + _plans.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  }
+}
+
+function populateTenantSelects() {
+  const opts = _tenants.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  const subSel = document.getElementById('newSubTenant');
+  if (subSel) subSel.innerHTML = opts;
+  const auditSel = document.getElementById('auditTenantFilter');
+  if (auditSel) auditSel.innerHTML = '<option value="">جميع الشركات</option>' + opts;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  1. DASHBOARD
+// ══════════════════════════════════════════════════════════════
+async function loadDashboard() {
+  const r = await apiJSON('/platform/stats');
+  if (!r?.ok) return;
+  const d = r.data;
+
+  document.getElementById('dStatTotal').textContent     = fmt(d.tenants?.total);
+  document.getElementById('dStatActive').textContent    = fmt(d.tenants?.active);
+  document.getElementById('dStatTrial').textContent     = fmt(d.tenants?.trial);
+  document.getElementById('dStatSuspended').textContent = fmt(d.tenants?.suspended);
+  document.getElementById('dStatEmployees').textContent = fmt(d.employees?.total);
+  document.getElementById('dStatSubs').textContent      = fmt(d.subscriptions?.active);
+  document.getElementById('dStatPlatUsers').textContent = fmt(d.platform_users?.total);
+
+  const auditEl = document.getElementById('dashRecentAudit');
+  const events = d.recent_audit_events || [];
+  auditEl.innerHTML = events.length
+    ? events.slice(0, 6).map(ev => `
+        <div class="audit-item" style="cursor:pointer" onclick="navigate('audit', {action_like: '${ev.action}'})">
+          <div>
+            <div class="audit-action">${ev.action}</div>
+            <div class="audit-meta">Entity: ${ev.entity_type} #${ev.entity_id ?? '—'} · ${ev.tenant_id ? `<span style="color:var(--accent2)">Tenant #${ev.tenant_id}</span>` : 'Platform'}</div>
+          </div>
+          <div class="audit-time">${fmtDateTime(ev.created_at)}</div>
+        </div>`).join('')
+    : '<div class="empty-state"><div class="empty-state-text">لا توجد أحداث مسجلة</div></div>';
+
+  const topEl = document.getElementById('dashTopTenants');
+  const top = d.top_tenants_by_employees || [];
+  topEl.innerHTML = top.length
+    ? `<table><thead><tr><th>الشركة</th><th>الحالة</th><th>الموظفون</th><th>تحكم</th></tr></thead><tbody>${
+        top.slice(0, 5).map(t => `<tr>
+          <td><strong>${t.name}</strong></td>
+          <td>${statusBadge(t.status)}</td>
+          <td><strong>${fmt(t.employee_count)}</strong></td>
+          <td>
+            <button class="tbl-btn tbl-btn-view" onclick="viewTenantDetail(${t.id})">👁 عرض</button>
+            <button class="tbl-btn tbl-btn-impersonate" onclick="impersonateTenant(${t.id}, '${t.name.replace(/'/g, "\\'")}')">🔑 دخول</button>
+          </td>
+        </tr>`).join('')
+      }</tbody></table>`
+    : '<div class="empty-state"><div class="empty-state-text">لا توجد شركات</div></div>';
+
+  const hRes = await api('/healthz');
+  const hOk  = hRes?.ok;
+  document.getElementById('healthAPI').innerHTML = `<span class="status-dot ${hOk ? 'status-ok' : 'status-err'}">${hOk ? 'Operational' : 'Down'}</span>`;
+  document.getElementById('healthDB').innerHTML  = `<span class="status-dot ${hOk ? 'status-ok' : 'status-err'}">${hOk ? 'Operational' : 'Down'}</span>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  2. TENANTS (Interactive + Impersonation + Auto-create)
+// ══════════════════════════════════════════════════════════════
+let _tenantSearchTimer = null;
+window.onTenantSearch = function() {
+  clearTimeout(_tenantSearchTimer);
+  _tenantSearchTimer = setTimeout(loadTenants, 300);
+};
+
+window.autoSlugify = function() {
+  const name = document.getElementById('newTenantName').value.trim();
+  const slugInput = document.getElementById('newTenantSlug');
+  if (name && !slugInput.dataset.manual) {
+    slugInput.value = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'company';
+  }
+};
+
+window.generateAdminPassword = function() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$';
+  let pw = '';
+  for (let i = 0; i < 10; i++) pw += chars.charAt(Math.floor(Math.random() * chars.length));
+  document.getElementById('newAdminPassword').value = pw;
+  toast('🎲 تم توليد كلمة مرور جديدة: ' + pw);
+};
+
+window.openCreateTenantModal = function() {
+  document.getElementById('newTenantName').value = '';
+  document.getElementById('newTenantSlug').value = '';
+  document.getElementById('newAdminName').value = '';
+  document.getElementById('newAdminEmail').value = '';
+  document.getElementById('newAdminPassword').value = 'admin@123';
+  loadPlansCache();
+  openModal('createTenantModal');
+};
+
+window.submitCreateTenant = async function() {
+  const name = document.getElementById('newTenantName').value.trim();
+  const slug = document.getElementById('newTenantSlug').value.trim();
+  const planId = document.getElementById('newTenantPlan')?.value;
+  const status = document.getElementById('newTenantStatus').value;
+  const adminName = document.getElementById('newAdminName').value.trim();
+  const adminEmail = document.getElementById('newAdminEmail').value.trim();
+  const adminPassword = document.getElementById('newAdminPassword').value.trim();
+
+  if (!name || !slug) return toast('يرجى كتابة اسم الشركة والمعرف الفريد (Slug)', 'error');
+
+  const body = {
+    name,
+    slug,
+    status,
+    plan_id: planId ? parseInt(planId) : null,
+    admin_name: adminName || null,
+    admin_email: adminEmail || null,
+    admin_password: adminPassword || null,
+  };
+
+  const btn = document.getElementById('btnSubmitTenant');
+  btn.disabled = true; btn.textContent = 'جاري إنشاء الشركة...';
+
+  const r = await apiJSON('/platform/tenants', { method: 'POST', body: JSON.stringify(body) });
+  btn.disabled = false; btn.textContent = '✓ إنشاء الشركة وحساب المدير';
+
+  if (r?.ok) {
+    toast(`✓ تم إنشاء الشركة بنجاح! حساب المسؤول: ${adminEmail || 'admin@' + slug + '.corp'}`);
+    closeModal('createTenantModal');
+    loadTenants(1);
+    loadTenantsCache();
+    viewTenantDetail(r.data.id);
+  } else {
+    toast(r?.data?.detail || 'حدث خطأ أثناء الإنشاء', 'error');
+  }
+};
+
+async function loadTenants(page = 1) {
+  _tenantsPage = page;
+  const search = document.getElementById('tenantSearch')?.value || '';
+  const statusF = document.getElementById('tenantStatusFilter')?.value || '';
+  const planF = document.getElementById('tenantPlanFilter')?.value || '';
+  const qs = new URLSearchParams({ page, page_size: 20 });
+  if (search) qs.set('search', search);
+  if (statusF) qs.set('status', statusF);
+
+  const r = await apiJSON(`/platform/tenants?${qs}`);
+  if (!r?.ok) return;
+  const d = r.data;
+
+  document.getElementById('tenantsCount').textContent = `(${fmt(d.total)})`;
+  const tbody = document.getElementById('tenantsTableBody');
+
+  let items = d.items || [];
+  if (planF) {
+    items = items.filter(t => t.plan_id == planF);
+  }
+
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🏢</div><div class="empty-state-text">لا توجد شركات مطابقة</div></div></td></tr>`;
+    document.getElementById('tenantsPagination').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = items.map(t => {
+    const planName = _plans.find(p => p.id === t.plan_id)?.name || (t.plan_id ? `#${t.plan_id}` : '—');
+    return `<tr>
+      <td>${t.id}</td>
+      <td>
+        <strong style="cursor:pointer;color:var(--accent2)" onclick="viewTenantDetail(${t.id})">${t.name}</strong><br>
+        <span style="font-size:11px;color:var(--text-muted);direction:ltr">${t.slug}</span>
+      </td>
+      <td>${statusBadge(t.status)}</td>
+      <td><strong>${fmt(t.employee_count)}</strong></td>
+      <td>${planName}</td>
+      <td>${t.subscription_status ? statusBadge(t.subscription_status) : '<span style="color:var(--text-muted)">—</span>'}</td>
+      <td style="font-size:12px">${t.owner_email || '—'}</td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="tbl-btn tbl-btn-impersonate" onclick="impersonateTenant(${t.id}, '${t.name.replace(/'/g, "\\'")}')" title="تسجيل الدخول كمسؤول الشركة في لوحة تحكم HRMS">🔑 دخول كمسؤول</button>
+        <button class="tbl-btn tbl-btn-view" onclick="viewTenantDetail(${t.id})">👁 تفاصيل</button>
+        <button class="tbl-btn tbl-btn-edit" onclick="openEditTenant(${t.id})">✏️</button>
+        ${t.status === 'suspended'
+          ? `<button class="tbl-btn" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)" onclick="activateTenant(${t.id})">✓ تفعيل</button>`
+          : `<button class="tbl-btn tbl-btn-suspend" onclick="openSuspendModal(${t.id})">⏸</button>`
+        }
+        <button class="tbl-btn tbl-btn-delete" onclick="deleteTenant(${t.id},'${t.name.replace(/'/g,"\\'")}')">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  renderPagination('tenants', d.total, d.page, d.page_size, loadTenants);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  IMPERSONATION (Instant log-in into company dashboard)
+// ══════════════════════════════════════════════════════════════
+window.impersonateTenant = async function(tenantId, tenantName) {
+  toast(`🔑 جاري تسجيل الدخول كمسؤول لشركة "${tenantName}"...`);
+  const r = await apiJSON(`/platform/tenants/${tenantId}/impersonate`, { method: 'POST' });
+  if (!r?.ok || !r.data?.access_token) {
+    return toast(r?.data?.detail || 'تعذر تسجيل الدخول كمسؤول الشركة', 'error');
+  }
+
+  // Save the company token and email into sessionStorage
+  sessionStorage.setItem('hrms_access_token', r.data.access_token);
+  sessionStorage.setItem('hrms_session_email', r.data.employee_email);
+
+  toast(`✅ تم تسجيل الدخول بنجاح! يتم التوجيه إلى لوحة الشركة...`, 'success');
+  window.open('dashboard.html', '_blank');
+};
+
+// ══════════════════════════════════════════════════════════════
+//  TENANT DETAILS VIEW (4 Interactive Tabs)
+// ══════════════════════════════════════════════════════════════
+window.viewTenantDetail = async function(id) {
+  _currentTenantId = id;
+  switchTab('tdTab', 'overview');
+  navigate('tenant-detail');
+  await loadTenantDetail(id);
+};
+
+async function loadTenantDetail(id) {
+  document.getElementById('tdHeader').innerHTML = '<div class="loading-spinner">جاري تحميل بيانات الشركة…</div>';
+
+  const r = await apiJSON(`/platform/tenants/${id}/detail`);
+  if (!r?.ok) {
+    document.getElementById('tdHeader').innerHTML = '<div class="empty-state"><div class="empty-state-text">فشل تحميل البيانات</div></div>';
+    return;
+  }
+  const t = r.data;
+  _currentTenantData = t;
+  document.getElementById('tdBreadcrumbName').textContent = t.name;
+  document.getElementById('tdEmpCountTab').textContent = fmt(t.stats?.employee_count);
+
+  document.getElementById('tdHeader').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="tenant-detail-name">${t.name}</div>
+        <div class="tenant-detail-meta">
+          ${statusBadge(t.status)}
+          <span class="tenant-detail-meta-item">🆔 Slug: ${t.slug}</span>
+          ${t.owner_email ? `<span class="tenant-detail-meta-item">📧 المسؤول: ${t.owner_email}</span>` : ''}
+          <span class="tenant-detail-meta-item">📅 تاريخ التسجيل: ${fmtDate(t.created_at)}</span>
+        </div>
+      </div>
+      <div class="tenant-detail-actions">
+        <button class="btn btn-impersonate" onclick="impersonateTenant(${t.id}, '${t.name.replace(/'/g, "\\'")}')">🔑 دخول لوحة تحكم الشركة (Impersonate)</button>
+        <button class="btn btn-warn btn-sm" onclick="openEditTenant(${t.id})">✏️ تعديل الشركة</button>
+        ${t.status === 'suspended'
+          ? `<button class="btn btn-success btn-sm" onclick="activateTenant(${t.id}, true)">✓ تفعيل الحساب</button>`
+          : `<button class="btn btn-danger btn-sm" onclick="openSuspendModal(${t.id})">⏸ تعليق الشركة</button>`
+        }
+      </div>
+    </div>
+    <div class="tenant-mini-stats">
+      <div class="tenant-mini-stat" style="cursor:pointer" onclick="switchTab('tdTab','employees')">
+        <div class="tenant-mini-stat-label">الموظفون (عرض 👥)</div>
+        <div class="tenant-mini-stat-value stat-blue">${fmt(t.stats?.employee_count)}</div>
+      </div>
+      <div class="tenant-mini-stat"><div class="tenant-mini-stat-label">الأقسام</div><div class="tenant-mini-stat-value stat-purple">${fmt(t.stats?.department_count)}</div></div>
+      <div class="tenant-mini-stat"><div class="tenant-mini-stat-label">المديرون</div><div class="tenant-mini-stat-value stat-yellow">${fmt(t.stats?.manager_count)}</div></div>
+      <div class="tenant-mini-stat"><div class="tenant-mini-stat-label">المسؤولون</div><div class="tenant-mini-stat-value stat-accent">${fmt(t.stats?.admin_count)}</div></div>
+    </div>`;
+
+  // Tab 1: Overview
+  const planInfo = t.plan ? `
+    <div class="info-card">
+      <div class="info-card-title">📦 باقة الاشتراك الحالية</div>
+      <div class="info-row"><span class="info-key">اسم الباقة</span><span class="info-val"><strong>${t.plan.name}</strong></span></div>
+      <div class="info-row"><span class="info-key">السعر الشهري</span><span class="info-val">${t.plan.price_usd === 0 ? 'مجانية' : `$${t.plan.price_usd} / شهر`}</span></div>
+      <div class="info-row"><span class="info-key">الحد الأقصى للموظفين</span><span class="info-val">${fmt(t.plan.max_employees)}</span></div>
+      <div class="info-row"><span class="info-key">المساحة التخزينية</span><span class="info-val">${(t.plan.max_storage_mb/1024).toFixed(1)} GB</span></div>
+      <div style="margin-top:12px">
+        <div class="stat-sub" style="margin-bottom:4px">استهلاك الموظفين: ${t.stats?.employee_count} / ${t.plan.max_employees}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,(t.stats?.employee_count/t.plan.max_employees)*100)}%"></div></div>
+      </div>
+    </div>` : `<div class="info-card"><div class="empty-state" style="padding:20px"><div class="empty-state-text">لا توجد خطة مرتبطة</div><div style="margin-top:10px"><button class="btn btn-accent btn-sm" onclick="openCreateSubForTenant(${t.id})">＋ ربط باقة</button></div></div></div>`;
+
+  const basicInfo = `
+    <div class="info-card">
+      <div class="info-card-title">📋 المعلومات والتهيئة</div>
+      <div class="info-row"><span class="info-key">الحالة التشغيلية</span><span class="info-val">${statusBadge(t.status)}</span></div>
+      <div class="info-row"><span class="info-key">المعرف البرمجي (Slug)</span><span class="info-val" dir="ltr">${t.slug}</span></div>
+      <div class="info-row"><span class="info-key">بريد المسؤول الرئيسي</span><span class="info-val">${t.owner_email || '—'}</span></div>
+      <div class="info-row"><span class="info-key">تاريخ الإنشاء</span><span class="info-val">${fmtDate(t.created_at)}</span></div>
+      ${t.suspended_reason ? `<div class="info-row"><span class="info-key">سبب التعليق</span><span class="info-val" style="color:var(--red)">${t.suspended_reason}</span></div>` : ''}
+    </div>`;
+
+  document.getElementById('tdOverviewGrid').innerHTML = basicInfo + planInfo;
+
+  // Tab 3: Subscriptions
+  const subActive = t.active_subscription;
+  document.getElementById('tdSubscriptionContent').innerHTML = subActive ? `
+    <div class="info-card">
+      <div class="info-card-title">✅ الاشتراك الفعال</div>
+      <div class="info-row"><span class="info-key">الخطة</span><span class="info-val"><strong>${subActive.plan_name}</strong></span></div>
+      <div class="info-row"><span class="info-key">الحالة</span><span class="info-val">${statusBadge(subActive.status)}</span></div>
+      <div class="info-row"><span class="info-key">تاريخ البداية</span><span class="info-val">${fmtDate(subActive.started_at)}</span></div>
+      <div class="info-row"><span class="info-key">تاريخ التجديد القادم</span><span class="info-val">${fmtDate(subActive.current_period_end)}</span></div>
+    </div>
+    ${t.subscription_history?.length > 1 ? `
+    <div class="table-card">
+      <div class="table-header"><div class="table-title">سجل الاشتراكات السابقة</div></div>
+      <table><thead><tr><th>#</th><th>الخطة</th><th>الحالة</th><th>البداية</th><th>الانتهاء</th></tr></thead>
+      <tbody>${t.subscription_history.map(s => `<tr>
+        <td>${s.id}</td>
+        <td>${s.plan_name}</td>
+        <td>${statusBadge(s.status)}</td>
+        <td>${fmtDate(s.started_at)}</td>
+        <td>${fmtDate(s.current_period_end) || fmtDate(s.cancelled_at) || '—'}</td>
+      </tr>`).join('')}</tbody></table>
+    </div>` : ''}
+  ` : `<div class="empty-state" style="padding:50px"><div class="empty-state-icon">💳</div><div class="empty-state-text">لا يوجد اشتراك نشط</div><div style="margin-top:14px"><button class="btn btn-accent btn-sm" onclick="openCreateSubForTenant(${t.id})">＋ تفعيل اشتراك الآن</button></div></div>`;
+
+  // Tab 4: Activity
+  const acts = t.recent_activity || [];
+  document.getElementById('tdActivityList').innerHTML = acts.length
+    ? acts.map(ev => `<div class="audit-item">
+        <div>
+          <div class="audit-action">${ev.action}</div>
+          <div class="audit-meta">${ev.actor} · ${ev.entity_type} #${ev.entity_id ?? '—'} ${ev.ip ? `· IP: ${ev.ip}` : ''}</div>
+        </div>
+        <div class="audit-time">${fmtDateTime(ev.created_at)}</div>
+      </div>`).join('')
+    : '<div class="empty-state"><div class="empty-state-text">لا توجد عمليات مسجلة</div></div>';
+}
+
+window.loadTenantEmployeesTab = async function() {
+  if (!_currentTenantId) return;
+  const tbody = document.getElementById('tdEmployeesTableBody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px">جاري تحميل موظفي الشركة…</td></tr>';
+
+  const r = await apiJSON(`/platform/tenants/${_currentTenantId}/employees`);
+  if (!r?.ok || !r.data?.items) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px">تعذر تحميل الموظفين</td></tr>';
+    return;
+  }
+
+  const emps = r.data.items;
+  if (!emps.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state" style="padding:30px"><div class="empty-state-text">لا يوجد موظفون مسجلون في هذه الشركة بعد</div></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = emps.map(e => `
+    <tr>
+      <td>${e.id}</td>
+      <td><strong>${e.first} ${e.last}</strong></td>
+      <td dir="ltr" style="font-size:13px">${e.email}</td>
+      <td><span class="badge badge-active">${e.role}</span></td>
+      <td>${e.title}</td>
+      <td>${e.department}</td>
+      <td>${e.status === 'active' ? '<span class="status-dot status-ok">نشط</span>' : '<span class="status-dot status-err">معطل</span>'}</td>
+    </tr>
+  `).join('');
+};
+
+window.openCreateSubForTenant = function(tenantId) {
+  loadPlansCache().then(() => {
+    const sel = document.getElementById('newSubTenant');
+    if (sel) sel.value = tenantId;
+    openModal('createSubModal');
+  });
+};
+
+window.openSuspendModal = function(id) {
+  _suspendId = id;
+  document.getElementById('suspendReason').value = '';
+  openModal('suspendModal');
+};
+
+window.confirmSuspend = async function() {
+  if (!_suspendId) return;
+  const reason = document.getElementById('suspendReason').value.trim();
+  const r = await apiJSON(`/platform/tenants/${_suspendId}/suspend`, {
+    method: 'POST', body: JSON.stringify({ reason })
+  });
+  if (r?.ok) {
+    toast('✓ تم تعليق الشركة بنجاح');
+    closeModal('suspendModal');
+    loadTenants(_tenantsPage);
+    if (_currentTenantId === _suspendId) loadTenantDetail(_suspendId);
+  } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.activateTenant = async function(id, reload = false) {
+  const r = await apiJSON(`/platform/tenants/${id}/activate`, { method: 'POST' });
+  if (r?.ok) {
+    toast('✓ تم تفعيل الشركة بنجاح');
+    loadTenants(_tenantsPage);
+    if (reload) loadTenantDetail(id);
+  } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.deleteTenant = async function(id, name) {
+  if (!confirm(`⚠️ تحذير: هل أنت متأكد من حذف شركة "${name}" نهائياً مع كافة بياناتها؟`)) return;
+  const r = await apiJSON(`/platform/tenants/${id}?confirm=true`, { method: 'DELETE' });
+  if (r?.ok) { toast('✓ تم حذف الشركة'); loadTenants(1); } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.openEditTenant = async function(id) {
+  const r = await apiJSON(`/platform/tenants/${id}`);
+  if (!r?.ok) return toast('فشل التحميل', 'error');
+  const t = r.data;
+  document.getElementById('editTenantId').value = t.id;
+  document.getElementById('editTenantName').value = t.name;
+  document.getElementById('editTenantEmail').value = t.owner_email || '';
+  document.getElementById('editTenantStatus').value = t.status;
+  await loadPlansCache();
+  const planSel = document.getElementById('editTenantPlan');
+  if (planSel && t.plan_id) planSel.value = t.plan_id;
+  openModal('editTenantModal');
+};
+
+window.submitEditTenant = async function() {
+  const id   = document.getElementById('editTenantId').value;
+  const name = document.getElementById('editTenantName').value.trim();
+  const email = document.getElementById('editTenantEmail').value.trim();
+  const status = document.getElementById('editTenantStatus').value;
+  const planId = document.getElementById('editTenantPlan')?.value;
+  const body = { name, owner_email: email || null, status };
+  if (planId) body.plan_id = parseInt(planId);
+
+  const r = await apiJSON(`/platform/tenants/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+  if (r?.ok) {
+    toast('✓ تم حفظ التعديلات');
+    closeModal('editTenantModal');
+    loadTenants(_tenantsPage);
+    if (_currentTenantId == id) loadTenantDetail(id);
+  } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+// ══════════════════════════════════════════════════════════════
+//  3. SUBSCRIPTIONS
+// ══════════════════════════════════════════════════════════════
+async function loadSubscriptions(page = 1) {
+  _subsPage = page;
+  const statusF = document.getElementById('subStatusFilter')?.value || '';
+  const qs = new URLSearchParams({ page, page_size: 20 });
+  if (statusF) qs.set('status', statusF);
+
+  const r = await apiJSON(`/platform/subscriptions?${qs}`);
+  if (!r?.ok) return;
+  const d = r.data;
+  document.getElementById('subsCount').textContent = `(${fmt(d.total)})`;
+  const tbody = document.getElementById('subsTableBody');
+
+  if (!d.items?.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">🔄</div><div class="empty-state-text">لا توجد اشتراكات</div></div></td></tr>`;
+    document.getElementById('subsPagination').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = d.items.map(s => `<tr>
+    <td>${s.id}</td>
+    <td>
+      <strong style="cursor:pointer;color:var(--accent2)" onclick="viewTenantDetail(${s.tenant_id})">${s.tenant_name}</strong><br>
+      <span style="font-size:11px;color:var(--text-muted)">${s.tenant_slug}</span>
+    </td>
+    <td><strong>${s.plan_name}</strong><br><span style="font-size:11px;color:var(--text-muted)">$${s.plan_price}/mo</span></td>
+    <td>${statusBadge(s.status)}</td>
+    <td>${fmtDate(s.started_at)}</td>
+    <td>${fmtDate(s.current_period_end) || '—'}</td>
+    <td style="display:flex;gap:5px">
+      <button class="tbl-btn tbl-btn-view" onclick="viewTenantDetail(${s.tenant_id})">🏢 الشركة</button>
+      <button class="tbl-btn tbl-btn-delete" onclick="cancelSub(${s.id})">✕ إلغاء</button>
+    </td>
+  </tr>`).join('');
+
+  renderPagination('subs', d.total, d.page, d.page_size, loadSubscriptions);
+}
+
+window.createSubscription = async function() {
+  const tenantId = document.getElementById('newSubTenant')?.value;
+  const planId   = document.getElementById('newSubPlan')?.value;
+  const status   = document.getElementById('newSubStatus')?.value;
+  const periodEnd = document.getElementById('newSubPeriodEnd')?.value;
+  if (!tenantId || !planId) return toast('يرجى اختيار الشركة والباقة', 'error');
+
+  const body = { tenant_id: parseInt(tenantId), plan_id: parseInt(planId), status };
+  if (periodEnd) body.current_period_end = new Date(periodEnd).toISOString();
+
+  const r = await apiJSON('/platform/subscriptions', { method: 'POST', body: JSON.stringify(body) });
+  if (r?.ok) { toast('✓ تم إنشاء الاشتراك بنجاح'); closeModal('createSubModal'); loadSubscriptions(1); }
+  else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.cancelSub = async function(id) {
+  if (!confirm('هل أنت متأكد من إلغاء هذا الاشتراك؟')) return;
+  const r = await apiJSON(`/platform/subscriptions/${id}`, { method: 'DELETE' });
+  if (r?.ok) { toast('✓ تم إلغاء الاشتراك'); loadSubscriptions(_subsPage); }
+  else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+// ══════════════════════════════════════════════════════════════
+//  4. PLANS
+// ══════════════════════════════════════════════════════════════
+async function loadPlans() {
+  const r = await apiJSON('/platform/plans');
+  if (!r?.ok) return;
+  _plans = r.data || [];
+  populatePlanSelects();
+
+  const grid = document.getElementById('plansGrid');
+  if (!_plans.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">💎</div><div class="empty-state-text">لا توجد خطط</div></div>';
+    return;
+  }
+
+  grid.innerHTML = _plans.map(p => `
+    <div class="plan-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div class="plan-card-name">${p.name}</div>
+        ${p.is_active ? '<span class="badge badge-active">نشط</span>' : '<span class="badge badge-cancelled">معطل</span>'}
+      </div>
+      <div class="plan-card-price">${p.price_usd === 0 ? 'مجانية' : `$${p.price_usd}`}<span>${p.price_usd > 0 ? ' / شهر' : ''}</span></div>
+      <div class="plan-card-meta">
+        👤 ${p.max_employees >= 999999 ? 'غير محدود' : `${fmt(p.max_employees)} موظف`} &nbsp;·&nbsp;
+        💾 ${p.max_storage_mb >= 1024 ? `${(p.max_storage_mb/1024).toFixed(0)}GB` : `${p.max_storage_mb}MB`} تخزين
+      </div>
+      <hr class="plan-card-divider" />
+      <div class="plan-feature"><span>✓ مسيرات الرواتب والإجازات</span></div>
+      <div class="plan-feature"><span>✓ إدارة المهام والأقسام</span></div>
+      <div class="plan-card-footer">
+        <button class="btn btn-accent btn-sm" style="flex:1" onclick="navigate('tenants', {plan_id: ${p.id}})">🏢 عرض الشركات المشتركة</button>
+        <button class="btn btn-ghost btn-sm" onclick="openEditPlan(${p.id})">✏️ تعديل</button>
+      </div>
+    </div>`).join('');
+}
+
+window.createPlan = async function() {
+  const name  = document.getElementById('newPlanName').value.trim();
+  const price = parseFloat(document.getElementById('newPlanPrice').value || '0');
+  const maxEmp = parseInt(document.getElementById('newPlanMaxEmp').value || '50');
+  const storage = parseInt(document.getElementById('newPlanStorage').value || '500');
+  if (!name) return toast('يرجى ملء اسم الخطة', 'error');
+
+  const r = await apiJSON('/platform/plans', {
+    method: 'POST', body: JSON.stringify({ name, price_usd: price, max_employees: maxEmp, max_storage_mb: storage })
+  });
+  if (r?.ok) {
+    toast('✓ تم إنشاء الخطة');
+    closeModal('createPlanModal');
+    loadPlans(); loadPlansCache();
+  } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.openEditPlan = async function(id) {
+  const plan = _plans.find(p => p.id === id);
+  if (!plan) return;
+  document.getElementById('editPlanId').value = plan.id;
+  document.getElementById('editPlanName').value = plan.name;
+  document.getElementById('editPlanPrice').value = plan.price_usd;
+  document.getElementById('editPlanMaxEmp').value = plan.max_employees;
+  document.getElementById('editPlanStorage').value = plan.max_storage_mb;
+  document.getElementById('editPlanActive').value = plan.is_active ? 'true' : 'false';
+  openModal('editPlanModal');
+};
+
+window.submitEditPlan = async function() {
+  const id = document.getElementById('editPlanId').value;
+  const body = {
+    name:            document.getElementById('editPlanName').value.trim(),
+    price_usd:       parseFloat(document.getElementById('editPlanPrice').value),
+    max_employees:   parseInt(document.getElementById('editPlanMaxEmp').value),
+    max_storage_mb:  parseInt(document.getElementById('editPlanStorage').value),
+    is_active:       document.getElementById('editPlanActive').value === 'true',
+  };
+  const r = await apiJSON(`/platform/plans/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+  if (r?.ok) { toast('✓ تم حفظ الخطة'); closeModal('editPlanModal'); loadPlans(); loadPlansCache(); }
+  else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+// ══════════════════════════════════════════════════════════════
+//  5. PLATFORM USERS
+// ══════════════════════════════════════════════════════════════
+async function loadPlatformUsers() {
+  const r = await apiJSON('/platform/users');
+  if (!r?.ok) return;
+  const users = r.data?.items || [];
+  const currentUser = STORAGE.user();
+  const isSuperAdmin = currentUser?.platform_role === 'super_admin';
+
+  const tbody = document.getElementById('usersTableBody');
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-text">لا يوجد مستخدمون</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = users.map(u => `<tr>
+    <td>${u.id}</td>
+    <td><strong>${u.full_name || '—'}</strong>${u.id == currentUser?.id ? ' <span style="font-size:10px;color:var(--accent2)">(أنت)</span>' : ''}</td>
+    <td dir="ltr" style="font-size:13px">${u.email}</td>
+    <td>${roleBadge(u.platform_role)}</td>
+    <td>${u.is_active ? '<span class="status-dot status-ok">نشط</span>' : '<span class="status-dot status-err">معطل</span>'}</td>
+    <td>${u.last_login_at ? fmtDate(u.last_login_at) : '<span style="color:var(--text-muted)">لم يدخل بعد</span>'}</td>
+    <td>
+      ${isSuperAdmin && u.id != currentUser?.id ? `
+        <button class="tbl-btn tbl-btn-delete" onclick="deleteUser(${u.id},'${(u.full_name||u.email).replace(/'/g,"\\'")}')">🗑 حذف</button>
+      ` : '<span style="color:var(--text-muted);font-size:12px">—</span>'}
+    </td>
+  </tr>`).join('');
+}
+
+window.createPlatformUser = async function() {
+  const email = document.getElementById('newUserEmail').value.trim();
+  const name  = document.getElementById('newUserName').value.trim();
+  const pw    = document.getElementById('newUserPassword').value;
+  const role  = document.getElementById('newUserRole').value;
+  if (!email || !pw) return toast('البريد وكلمة المرور إلزاميان', 'error');
+
+  const r = await apiJSON('/platform/users', {
+    method: 'POST', body: JSON.stringify({ email, full_name: name, password: pw, platform_role: role })
+  });
+  if (r?.ok) {
+    toast('✓ تم إضافة مسؤول المنصة');
+    closeModal('createUserModal');
+    loadPlatformUsers();
+  } else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+window.deleteUser = async function(id, name) {
+  if (!confirm(`حذف المسؤول "${name}"؟`)) return;
+  const r = await apiJSON(`/platform/users/${id}`, { method: 'DELETE' });
+  if (r?.ok) { toast('✓ تم الحذف'); loadPlatformUsers(); }
+  else toast(r?.data?.detail || 'خطأ', 'error');
+};
+
+// ══════════════════════════════════════════════════════════════
+//  6. AUDIT LOG
+// ══════════════════════════════════════════════════════════════
+async function loadAudit(page = 1, params = {}) {
+  _auditPage = page;
+  const q = params.action_like || document.getElementById('auditSearch')?.value || '';
+  if (params.action_like) {
+    const searchInput = document.getElementById('auditSearch');
+    if (searchInput) searchInput.value = params.action_like;
+  }
+  const tenantId = params.tenant_id || document.getElementById('auditTenantFilter')?.value || '';
+  const qs = new URLSearchParams({ page, page_size: 30 });
+  if (q) qs.set('action_like', q);
+  if (tenantId) qs.set('tenant_id', tenantId);
+
+  const r = await apiJSON(`/platform/audit?${qs}`);
+  if (!r?.ok) return;
+  const d = r.data;
+  document.getElementById('auditCount').textContent = `(${fmt(d.total)})`;
+  const el = document.getElementById('auditList');
+
+  if (!d.items?.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-text">لا توجد أحداث</div></div>';
+    document.getElementById('auditPagination').style.display = 'none';
+    return;
+  }
+
+  el.innerHTML = d.items.map(ev => `
+    <div class="audit-item">
+      <div>
+        <div class="audit-action">${ev.action}</div>
+        <div class="audit-meta">
+          <strong>${ev.actor}</strong> · 
+          ${ev.tenant_id ? `<span style="color:var(--accent2);cursor:pointer" onclick="viewTenantDetail(${ev.tenant_id})">${ev.tenant_name || 'Tenant #' + ev.tenant_id} ↗</span>` : 'Platform Admin'}
+          · Entity: ${ev.entity_type} #${ev.entity_id ?? '—'}
+          ${ev.ip ? `· <span dir="ltr">IP: ${ev.ip}</span>` : ''}
+        </div>
+      </div>
+      <div class="audit-time">${fmtDateTime(ev.created_at)}</div>
+    </div>`).join('');
+
+  renderPagination('audit', d.total, d.page, d.page_size, loadAudit);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  7. SYSTEM HEALTH
+// ══════════════════════════════════════════════════════════════
+async function loadSystemHealth() {
+  const grid = document.getElementById('healthGrid');
+  grid.innerHTML = '<div class="loading-spinner" style="grid-column:1/-1">جاري الفحص…</div>';
+
+  document.getElementById('sysApiUrl').textContent = API;
+  document.getElementById('settingsDocsLink').href = `${API}/docs`;
+  document.getElementById('settingsHealthLink').href = `${API}/healthz`;
+
+  const [healthRes, statsRes] = await Promise.all([
+    api('/healthz'),
+    apiJSON('/platform/stats'),
+  ]);
+
+  let healthData = null;
+  try { healthData = await healthRes?.json(); } catch {}
+  const apiOk = healthRes?.ok && healthData?.ok;
+  const dbOk  = healthData?.ok;
+
+  document.getElementById('sysLastCheck').textContent = new Date().toLocaleString('ar');
+  if (statsRes?.ok) {
+    document.getElementById('sysPlUsers').textContent = fmt(statsRes.data?.platform_users?.total);
+    document.getElementById('sysTenants').textContent = fmt(statsRes.data?.tenants?.total);
+  }
+
+  grid.innerHTML = [
+    { icon: '🖥️', label: 'API Server (FastAPI)', ok: apiOk, detail: apiOk ? 'يعمل ويستجيب بشكل طبيعي' : 'غير متصل' },
+    { icon: '🗄️', label: 'PostgreSQL Database',   ok: dbOk,  detail: dbOk  ? 'متصلة ومتزامنة' : 'فشل الاتصال' },
+    { icon: '📧', label: 'خدمة البريد (SMTP)',   ok: true,  detail: 'جاهزة للارسال' },
+    { icon: '💾', label: 'المساحة والملفات',     ok: true,  detail: 'التخزين المحلي يعمل' },
+  ].map(({ icon, label, ok, detail }) => `
+    <div class="health-card">
+      <div class="health-icon">${icon}</div>
+      <div>
+        <div class="health-label">${label}</div>
+        <div class="health-status"><span class="status-dot ${ok ? 'status-ok' : 'status-err'}">${ok ? 'Operational' : 'Down'}</span></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px">${detail}</div>
+      </div>
+    </div>`).join('');
+}
+
+function loadSettings() {
+  document.getElementById('settingsDocsLink').href = `${API}/docs`;
+  document.getElementById('settingsHealthLink').href = `${API}/healthz`;
+}
+
+function renderPagination(prefix, total, page, pageSize, loader) {
+  const totalPages = Math.ceil(total / pageSize);
+  const paginationEl = document.getElementById(`${prefix}Pagination`);
+  if (!paginationEl || totalPages <= 1) {
+    if (paginationEl) paginationEl.style.display = 'none';
+    return;
+  }
+  paginationEl.style.display = 'flex';
+  document.getElementById(`${prefix}PaginationInfo`).textContent =
+    `عرض ${((page - 1) * pageSize) + 1}–${Math.min(page * pageSize, total)} من ${fmt(total)}`;
+
+  const btns = document.getElementById(`${prefix}PaginationBtns`);
+  let html = `<button class="page-btn" ${page <= 1 ? 'disabled' : ''} id="${prefix}PrevBtn">‹ السابق</button>`;
+  for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
+    html += `<button class="page-btn ${i === page ? 'active' : ''}" onclick="(${loader})(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" ${page >= totalPages ? 'disabled' : ''} id="${prefix}NextBtn">التالي ›</button>`;
+  btns.innerHTML = html;
+
+  const prev = document.getElementById(`${prefix}PrevBtn`);
+  const next = document.getElementById(`${prefix}NextBtn`);
+  if (prev && page > 1) prev.onclick = () => loader(page - 1);
+  if (next && page < totalPages) next.onclick = () => loader(page + 1);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+const _token = STORAGE.token();
+const _user  = STORAGE.user();
+if (_token && _user) {
+  showApp(_user);
+} else {
+  showLogin();
+}
+</script>
+</body>
+</html>

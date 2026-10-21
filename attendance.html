@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Attendance</h2>
+            <div class="btn-group">
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">Export PDF</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card clock-card">
+              <h3>Clock In / Out</h3>
+              <div class="clock-display" id="liveClock">09:42 AM</div>
+              <p>Today: <strong>08:56 AM</strong> – <strong id="clockOutTime">—</strong></p>
+              <div class="btn-group">
+                <button class="btn btn-primary" id="clockInBtn">Clock In</button>
+                <button class="btn btn-outline" id="clockOutBtn">Clock Out</button>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Monthly Summary</h3>
+              <div class="stat-row"><span>Days Present</span><strong id="attPresent">—</strong></div>
+              <div class="stat-row"><span>Days Late</span><strong class="urgent" id="attLate">—</strong></div>
+              <div class="stat-row"><span>Days Absent</span><strong class="urgent" id="attAbsent">—</strong></div>
+              <div class="stat-row"><span>Avg Hours/Day</span><strong id="attAvgHrs">—</strong></div>
+              <button class="btn btn-outline" style="margin-top:.75rem">Request Correction</button>
+            </div>
+          </div>
+          <div class="card table-card">
+            <div class="card-header"><h3>Attendance Log</h3></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th></tr></thead>
+                <tbody id="attLogBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/attendance.js"></script>
+</body>
+</html>

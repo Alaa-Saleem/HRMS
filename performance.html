@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Performance – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Performance Tracker</h2>
+            <div class="btn-group">
+              <button class="btn btn-primary" data-roles="admin,manager">Start Review Cycle</button>
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">Export PDF</button>
+            </div>
+          </div>
+          <div class="metrics" style="--cols:3">
+            <div class="metric-card"><div><small>Overall Rating</small><strong id="perfRating">—</strong></div></div>
+            <div class="metric-card"><div><small>Goals Completed</small><strong id="perfGoals">—</strong></div></div>
+            <div class="metric-card"><div><small>Peer Reviews</small><strong id="perfReviews">—</strong></div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><h3>Goals</h3><button class="btn btn-sm btn-outline">+ Add Goal</button></div>
+              <ul class="goal-list" id="perfGoalList"></ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Recent Feedback</h3><button class="btn btn-sm btn-outline">+ Add</button></div>
+              <div class="feedback-list" id="perfFeedbackList"></div>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/performance.js"></script>
+</body>
+</html>

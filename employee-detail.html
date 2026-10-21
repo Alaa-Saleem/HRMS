@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Profile – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <a class="btn btn-outline" href="employees.html">&larr; Back to Employees</a>
+            <div class="btn-group" id="empDetailActions">
+              <button class="btn btn-primary" id="editEmpBtn">Edit</button>
+              <button class="btn btn-outline" id="toggleStatusBtn">Deactivate</button>
+              <button class="btn btn-danger" id="deleteEmpBtn">Delete</button>
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">Export PDF</button>
+            </div>
+          </div>
+
+          <div class="profile-header" id="profileHeader">
+            <div class="profile-avatar" id="profileAvatar">JD</div>
+            <div class="profile-info">
+              <h2 id="profileName">John Doe</h2>
+              <p id="profileTitle">HR Administrator</p>
+              <div class="profile-meta">
+                <span class="badge green" id="profileStatus">Active</span>
+                <span id="profileDept">Human Resources</span>
+                <span id="profileManager"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-tabs">
+            <button class="tab-btn active" data-tab="personal">Personal</button>
+            <button class="tab-btn" data-tab="job">Job Details</button>
+            <button class="tab-btn" data-tab="attendance-detail">Attendance</button>
+            <button class="tab-btn" data-tab="leave-detail">Leave</button>
+            <button class="tab-btn" data-tab="payroll-detail">Payroll</button>
+            <button class="tab-btn" data-tab="perf-detail">Performance</button>
+          </div>
+
+          <!-- Personal Tab -->
+          <div class="tab-content active" id="tab-personal">
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header"><h3>Contact Information</h3></div>
+                <div class="detail-grid">
+                  <div class="detail-item"><span>Email</span><strong id="detailEmail">—</strong></div>
+                  <div class="detail-item"><span>Phone</span><strong id="detailPhone">—</strong></div>
+                  <div class="detail-item"><span>Address</span><strong id="detailAddress">—</strong></div>
+                  <div class="detail-item"><span>Emergency Contact</span><strong id="detailEmergency">—</strong></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Personal Details</h3></div>
+                <div class="detail-grid">
+                  <div class="detail-item"><span>Date of Birth</span><strong id="detailDOB">—</strong></div>
+                  <div class="detail-item"><span>Gender</span><strong id="detailGender">—</strong></div>
+                  <div class="detail-item"><span>Nationality</span><strong id="detailNationality">—</strong></div>
+                  <div class="detail-item"><span>Marital Status</span><strong id="detailMarital">—</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Tab -->
+          <div class="tab-content" id="tab-job">
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header"><h3>Employment</h3></div>
+                <div class="detail-grid">
+                  <div class="detail-item"><span>Employee ID</span><strong id="detailEmpId">—</strong></div>
+                  <div class="detail-item"><span>Job Title</span><strong id="detailJobTitle">—</strong></div>
+                  <div class="detail-item"><span>Department</span><strong id="detailDeptJob">—</strong></div>
+                  <div class="detail-item"><span>Start Date</span><strong id="detailStartDate">—</strong></div>
+                  <div class="detail-item"><span>Employment Type</span><strong id="detailEmpType">—</strong></div>
+                  <div class="detail-item"><span>Reports To</span><strong id="detailReportsTo">—</strong></div>
+                </div>
+              </div>
+              <div class="card" id="directReportsCard" style="display:none">
+                <div class="card-header"><h3>Direct Reports</h3></div>
+                <ul class="team-list" id="directReportsList"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance Tab -->
+          <div class="tab-content" id="tab-attendance-detail">
+            <div class="grid-2">
+              <div class="card">
+                <h3>Monthly Summary</h3>
+                <div class="stat-row"><span>Days Present</span><strong id="detailPresent">—</strong></div>
+                <div class="stat-row"><span>Days Late</span><strong id="detailLate" class="urgent">—</strong></div>
+                <div class="stat-row"><span>Days Absent</span><strong id="detailAbsent" class="urgent">—</strong></div>
+                <div class="stat-row"><span>Avg Hours/Day</span><strong id="detailAvgHrs">—</strong></div>
+              </div>
+              <div class="card">
+                <h3>Recent Log</h3>
+                <div class="table-scroll">
+                  <table>
+                    <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+                    <tbody id="detailAttendanceLog"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leave Tab -->
+          <div class="tab-content" id="tab-leave-detail">
+            <div class="metrics" style="--cols:3">
+              <div class="metric-card"><div><small>Annual Leave</small><strong id="detailAnnual">—</strong></div></div>
+              <div class="metric-card"><div><small>Sick Leave</small><strong id="detailSick">—</strong></div></div>
+              <div class="metric-card"><div><small>Personal Leave</small><strong id="detailPersonal">—</strong></div></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Leave History</h3></div>
+              <div class="leave-list" id="detailLeaveHistory"></div>
+            </div>
+          </div>
+
+          <!-- Payroll Tab -->
+          <div class="tab-content" id="tab-payroll-detail">
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header"><h3>Salary Breakdown</h3></div>
+                <div class="stat-row"><span>Base Salary</span><strong id="detailBase">—</strong></div>
+                <div class="stat-row"><span>Housing Allowance</span><strong id="detailHousing">—</strong></div>
+                <div class="stat-row"><span>Tax Deduction</span><strong id="detailTax" class="urgent">—</strong></div>
+                <div class="stat-row"><span>Insurance</span><strong id="detailIns" class="urgent">—</strong></div>
+                <div class="stat-row total"><span>Net Pay</span><strong id="detailNet">—</strong></div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Payment History</h3></div>
+                <ul class="history-list" id="detailPayHistory"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Tab -->
+          <div class="tab-content" id="tab-perf-detail">
+            <div class="metrics" style="--cols:3">
+              <div class="metric-card"><div><small>Overall Rating</small><strong id="detailRating">—</strong></div></div>
+              <div class="metric-card"><div><small>Goals Completed</small><strong id="detailGoals">—</strong></div></div>
+              <div class="metric-card"><div><small>Peer Reviews</small><strong id="detailReviews">—</strong></div></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Recent Feedback</h3></div>
+              <div class="feedback-list" id="detailFeedback"></div>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/route-employee-profile.js"></script>
+</body>
+</html>

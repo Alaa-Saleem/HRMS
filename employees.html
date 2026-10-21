@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employees – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Employee Management</h2>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="addEmpBtn2">+ Add Employee</button>
+              <button class="btn btn-outline export-btn" data-type="csv">CSV</button>
+              <button class="btn btn-outline export-btn" data-type="pdf">PDF</button>
+            </div>
+          </div>
+          <div class="card table-card">
+            <div class="table-toolbar">
+              <input type="search" class="table-search" placeholder="Filter employees…" id="empTableSearch" />
+              <select class="filter-select" id="deptFilter">
+                <option value="">All Departments</option>
+              </select>
+              <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="table-scroll">
+              <table id="empTable">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Manager</th>
+                    <th>Salary</th>
+                    <th>Start Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="empTableBody"></tbody>
+              </table>
+            </div>
+            <div class="table-footer" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+              <span id="empCount">Loading…</span>
+              <div class="btn-group" style="margin-left:auto">
+                <button type="button" class="btn btn-sm btn-outline" id="empPrevPage" disabled>Prev</button>
+                <button type="button" class="btn btn-sm btn-outline" id="empNextPage">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/employees.js"></script>
+</body>
+</html>

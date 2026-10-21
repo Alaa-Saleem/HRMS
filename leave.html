@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave – HRMS Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <script src="./js/hrms-config.js?v=2"></script>
+</head>
+<body>
+<div id="hrmsMount"></div>
+<template id="pageTemplate">
+        <section class="screen active">
+          <div class="screen-top">
+            <h2 class="screen-title">Leave Management</h2>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="requestLeaveBtn">+ Request Leave</button>
+              <button class="btn btn-outline export-btn" data-type="csv">Export CSV</button>
+            </div>
+          </div>
+          <div class="metrics" style="--cols:3">
+            <div class="metric-card"><div><small>Annual Leave</small><strong id="leaveScreenAnnual">—</strong></div></div>
+            <div class="metric-card"><div><small>Sick Leave</small><strong id="leaveScreenSick">—</strong></div></div>
+            <div class="metric-card"><div><small>Personal Leave</small><strong id="leaveScreenPersonal">—</strong></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Leave Requests</h3></div>
+            <div class="leave-list" id="leaveScreenList"></div>
+          </div>
+        </section>
+
+        
+</template>
+<script type="module" src="./js/boot/leave.js"></script>
+</body>
+</html>
